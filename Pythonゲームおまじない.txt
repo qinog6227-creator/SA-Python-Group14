@@ -1,0 +1,20 @@
+Pythonゲーム開発おまじない
+
+import pygame  # おまじない
+pygame.init()  # おまじない
+
+# 画面の作成（好きなサイズに変える）
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("タイトルを入力")
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # ここに描画処理を書いていく
+
+    pygame.display.flip()  # 画面更新
+
+pygame.quit()
