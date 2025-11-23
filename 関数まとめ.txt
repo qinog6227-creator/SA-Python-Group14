@@ -1,0 +1,26 @@
+●Pygame おまじない系
+
+Pygameを読み込む：import pygame
+Pygameを初期化する：pygame.init()
+ウィンドウを作る：screen = pygame.display.set_mode((幅, 高さ))
+ウィンドウタイトルを設定する：pygame.display.set_caption("タイトル")
+Pygameを終了する：pygame.quit()
+
+●あらかじめ取得する系
+ウィンドウ幅の中央を取得する：w = screen.get_width() // 2
+ウィンドウ高さの中央を取得する：h = screen.get_height() // 2
+フォントを作る：フォント名(なんでもいい) = pygame.font.SysFont("フォント名", サイズ)
+
+●文字表示系
+文字を作成する：text = font.render("文字列", True, (R,G,B))
+文字の位置を決める：text_rect = text.get_rect(center=(x, y))
+文字を画面に反映：screen.blit(text, text_rect)
+
+●描画系
+背景を塗りつぶす：screen.fill((R,G,B))
+四角を描く：pygame.draw.rect(screen, (R,G,B), (x, y, 幅, 高さ))
+円を描く：pygame.draw.circle(screen, (R,G,B), (x, y), 半径)
+線を描く：pygame.draw.line(screen, (R,G,B), (x1, y1), (x2, y2), 太さ)
+描画内容を画面に反映する：pygame.display.flip()
+
+
