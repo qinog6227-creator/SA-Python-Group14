@@ -1,46 +1,34 @@
+#おまじない(最初に書く)
 import pygame
-import map  # map.py をインポート
-
 pygame.init()
-screen = pygame.display.set_mode((1000, 600))
-pygame.display.set_caption("タイトル画面")
 
-w = screen.get_width() // 2
-h = screen.get_height() // 2
+# ウィンドウ作成
+screen = pygame.display.set_mode((640, 480))
+pygame.display.set_caption("ゲームタイトル")
 
-font1 = pygame.font.SysFont("meiryo", 35)   
-font2 = pygame.font.SysFont("meiryo", 50)
+# フォントごとに設定（文字を書くなら必要）
+font1 = pygame.font.Font(None, 40)
+font2 = pygame.font.Font(None, 60)
 
-show_map = False  # マップ画面を表示するかどうか
-
+#メインループ：ここに処理を書く
 running = True
-while running:
+while running: #無限ループ
+    #イベント処理（キー入力・×ボタンなど
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
-                show_map = True  # フラグを立てる
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
-                show_map = False  # 離したら戻す
 
-    if show_map:
-        map.show_map(screen)  # フラグが True の時だけ関数を呼ぶ
-        continue  # map が終了したら次のループへ
+    # ---- 画面の更新処理 ----
+    screen.fill((0, 0, 0))  # 画面を黒で塗りつぶし
 
-    # タイトル画面描画
-    screen.fill((0, 0, 0))
-    pygame.draw.rect(screen, (255, 0, 0), (w - 250, h - 150,500,300))
+    # ---- 描画処理を書く（文字・画像・図形など） ----
+    #文字を書く
+    text = font1.render("Hello!", True, (255, 255, 255))
+    screen.blit(text, (50, 50))
 
-    text = font1.render("坊主めくり × カードバトル", True, (255, 255, 255))
-    text_rect = text.get_rect(center=(w, h-50))
-    screen.blit(text, text_rect)
 
-    text = font2.render("Heian Bozu Attak", True, (255, 255, 255))
-    text_rect = text.get_rect(center=(w, h+50))
-    screen.blit(text, text_rect)
+    #おまじない(画面更新)
+    pygame.display.update()
 
-    pygame.display.flip()
-
+#おまじない(最後に書く)
 pygame.quit()
