@@ -1,5 +1,7 @@
-import pygame
+#ここは描画処理のみを行い、main.py内で呼び出す
+import pygame #おまじない
 
+#マップ画面を描画する関数
 def draw_map(screen):
     w = screen.get_width() // 2
     h = screen.get_height() // 2

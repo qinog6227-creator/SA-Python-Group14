@@ -6,12 +6,10 @@ import map
 def main():
     pygame.init()
     screen = pygame.display.set_mode((1000, 500))
-    pygame.display.set_caption("ゲームタイトル")
+    pygame.display.set_caption("Heian Bozu Attack")
 
     font1 = pygame.font.Font(
-        r"C:\Users\user\Desktop\SA-Python-Group14\font\PixelMplus12R.ttf",
-        40
-    )
+        r"C:\Users\user\Desktop\SA-Python-Group14\font\PixelMplus12R.ttf", 40)
 
     state = "title"
     clock = pygame.time.Clock()
