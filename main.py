@@ -1,42 +1,44 @@
-import pygame
-import sys
-import title
-import map
+import pygame #おまじない
+import sys #おまじない
+import title #タイトル画面の描画処理をインポート
+import map #マップ画面の描画処理をインポート
 
+# メイン関数
 def main():
-    pygame.init()
-    screen = pygame.display.set_mode((1000, 500))
-    pygame.display.set_caption("Heian Bozu Attack")
+    pygame.init() #おまじない
+    screen = pygame.display.set_mode((1000, 500)) #画面サイズを設定
+    pygame.display.set_caption("Heian Bozu Attack") #画面タイトルを設定
 
-    font1 = pygame.font.Font(
-        r"C:\Users\user\Desktop\SA-Python-Group14\font\PixelMplus12R.ttf", 40)
+    # フォントを設定
+    font1 = pygame.font.Font(r"C:\Users\user\Desktop\SA-Python-Group14\font\PixelMplus12R.ttf", 40)
 
+    #state変数で画面遷移を管理
     state = "title"
     clock = pygame.time.Clock()
     running = True
 
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+            if event.type == pygame.QUIT: # ×ボタンが押されたら
+                running = False #ループを抜けて終了する
 
-            if event.type == pygame.KEYDOWN:
-                if state == "title" and event.key in (pygame.K_LSHIFT, pygame.K_RSHIFT):
-                    state = "map"
-                if state == "map" and event.key == pygame.K_ESCAPE:
-                    state = "title"
+            if event.type == pygame.KEYDOWN: #キーが押されたら
+                if state == "title" and event.key == pygame.K_SPACE: # SPACEキーが押されたら
+                    state = "map" #マップ画面へ遷移
+                if state == "map" and event.key == pygame.K_ESCAPE: # ESCキーが押されたら
+                    state = "title" #タイトル画面へ遷移
 
-        if state == "title":
-            title.draw_title(screen, font1)
-        elif state == "map":
-            map.draw_map(screen)
+        if state == "title": #タイトル画面ならば
+            title.draw_title(screen, font1) #タイトル画面の関数を呼び出す
+        elif state == "map": #マップ画面ならば
+            map.draw_map(screen) # マップ画面の関数を呼び出す
 
-        pygame.display.update()
+        pygame.display.update() #おまじない
         clock.tick(60)
 
-    pygame.quit()
-    sys.exit()
+    pygame.quit() #おまじない(終了時)
+    sys.exit() #おまじない(終了時)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": #おまじない
     main()
