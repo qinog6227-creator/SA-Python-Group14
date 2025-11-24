@@ -13,10 +13,10 @@ def draw_title(screen, font):
     pygame.draw.rect(screen, (255, 0, 0), (w - 250, h - 150, 500, 300))  #四角形を描画
 
     #テキストを出力
-    text = font.render("坊主めくり×カードバトル", True, (255, 255, 255))
+    text = font.render("BozuMekuri × Card Battle", True, (255, 255, 255))
     screen.blit(text, text.get_rect(center=(w, h - 50)))
 
-    text = font.render("Heian Bozu Attack(仮称)", True, (255, 255, 255))
+    text = font.render("Heian Bozu Attack(Kari)", True, (255, 255, 255))
     screen.blit(text, text.get_rect(center=(w, h + 10)))
 
     text = font.render("Press SPACE to Start", True, (255,255,255))
