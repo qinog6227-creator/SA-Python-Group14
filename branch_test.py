@@ -1,6 +1,6 @@
 #ここにあなたの名前を入力してください。
 
-# NAKANO YUTO
+# Nakano Yutoです。
 # 
 #
 #
