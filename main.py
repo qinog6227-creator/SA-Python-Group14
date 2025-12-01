@@ -2,12 +2,15 @@ import pygame #おまじない
 import sys #おまじない
 import title #タイトル画面の描画処理をインポート
 import map #マップ画面の描画処理をインポート
+import menu #メニュー画面の描画処理をインポート
+import battle #バトル画面の描画処理をインポート
+
 
 # メイン関数
 def main():
     pygame.init() #おまじない
     screen = pygame.display.set_mode((1000, 500)) #画面サイズを設定
-    pygame.display.set_caption("Heian Bozu Attack") #画面タイトルを設定
+    pygame.display.set_caption("つるぎめくり(14班)") #画面タイトルを設定
 
     # フォントを設定
     font1 = pygame.font.Font(None, 40)
@@ -25,8 +28,6 @@ def main():
             if event.type == pygame.KEYDOWN: #キーが押されたら
                 if state == "title" and event.key == pygame.K_SPACE: # SPACEキーが押されたら
                     state = "map" #マップ画面へ遷移
-                if state == "map" and event.key == pygame.K_ESCAPE: # ESCキーが押されたら
-                    state = "title" #タイトル画面へ遷移
 
         if state == "title": #タイトル画面ならば
             title.draw_title(screen, font1) #タイトル画面の関数を呼び出す
