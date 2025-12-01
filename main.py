@@ -10,7 +10,7 @@ def main():
     pygame.display.set_caption("Heian Bozu Attack") #画面タイトルを設定
 
     # フォントを設定
-    font1 = pygame.font.Font(r"C:\Users\user\Desktop\SA-Python-Group14\font\PixelMplus12R.ttf", 40)
+    font1 = pygame.font.Font(None, 40)
 
     #state変数で画面遷移を管理
     state = "title"
