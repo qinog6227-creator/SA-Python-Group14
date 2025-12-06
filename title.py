@@ -35,7 +35,7 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 state = STATE_GAME
 
-    # ----------- 描画 -----------
+    # 描画
     if state == STATE_TITLE:
         screen.blit(title_img, (0, 0))
 
