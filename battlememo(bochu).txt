@@ -1,0 +1,183 @@
+# cli_battle.py — コマンドラインで動くカードバトルの論理プロトタイプ
+import random
+from dataclasses import dataclass, field
+from typing import List, Callable, Dict
+
+# --- データモデル ---
+@dataclass
+class Card:
+    id: str
+    name: str
+    desc: str
+    effect: str  # effect id
+    value: int = 0  # ダメージ量や回復量などのパラメータ
+
+@dataclass
+class State:
+    player_hp: int
+    enemy_hp: int
+    deck: List[Card]
+    hand: List[Card] = field(default_factory=list)
+    discard: List[Card] = field(default_factory=list)
+    turn: int = 1
+    log: List[str] = field(default_factory=list)
+
+# --- カード効果を実装する関数群 ---
+def effect_damage(state: State, card: Card, target: str = "enemy"):
+    dmg = card.value
+    if target == "enemy":
+        state.enemy_hp -= dmg
+        state.log.append(f"プレイヤーは {card.name} を使って敵に {dmg} ダメージ。")
+    else:
+        state.player_hp -= dmg
+        state.log.append(f"敵は {card.name} を使ってプレイヤーに {dmg} ダメージ。")
+
+def effect_heal(state: State, card: Card):
+    heal = card.value
+    state.player_hp += heal
+    state.log.append(f"プレイヤーは {card.name} で {heal} 回復。")
+
+def effect_draw(state: State, card: Card, n=1):
+    state.log.append(f"プレイヤーは {card.name} で {n} 枚引く。")
+    draw(state, n)
+
+# マップ of effect id -> function
+EFFECTS: Dict[str, Callable] = {
+    "damage": effect_damage,
+    "heal": effect_heal,
+    "draw": effect_draw,
+}
+
+# --- デッキ操作 ---
+def make_deck() -> List[Card]:
+    # 単純なサンプルデッキ
+    return [
+        Card("c1", "スマッシュ", "敵に6ダメージ", "damage", 6),
+        Card("c2", "回復薬", "自分を5回復", "heal", 5),
+        Card("c3", "速攻", "2枚ドロー", "draw", 2),
+        Card("c1", "スマッシュ", "敵に6ダメージ", "damage", 6),
+        Card("c4", "大斬り", "敵に10ダメージ", "damage", 10),
+        Card("c2", "回復薬", "自分を5回復", "heal", 5),
+        Card("c3", "速攻", "2枚ドロー", "draw", 2),
+    ]
+
+def shuffle(deck: List[Card]):
+    random.shuffle(deck)
+
+def draw(state: State, n=1):
+    for _ in range(n):
+        if not state.deck:
+            # リシャッフル discard->deck
+            state.deck = state.discard[:]
+            state.discard.clear()
+            shuffle(state.deck)
+            state.log.append("山札が尽きた。捨て札をシャッフルして山札を補充。")
+            if not state.deck:
+                state.log.append("カードがもうない！")
+                return
+        card = state.deck.pop(0)
+        state.hand.append(card)
+        state.log.append(f"ドロー: {card.name}")
+
+# --- カードをプレイする（手札からindexで指定） ---
+def play_card_by_index(state: State, idx: int):
+    if idx < 0 or idx >= len(state.hand):
+        state.log.append("無効な選択")
+        return
+    card = state.hand.pop(idx)
+    # 効果実行
+    eff = EFFECTS.get(card.effect)
+    if eff:
+        # effect_damage は targetを指定する必要がある型
+        if card.effect == "damage":
+            eff(state, card, "enemy")
+        elif card.effect == "draw":
+            eff(state, card, card.value)
+        else:
+            eff(state, card)
+    else:
+        state.log.append(f"{card.name} の効果が未定義。")
+    # プレイ済みは捨て札へ
+    state.discard.append(card)
+
+# --- 敵のターン（簡単なAI） ---
+def enemy_turn(state: State):
+    # 単純にランダムで攻撃（敵は固定ダメージ）
+    dmg = random.choice([4, 5, 6])
+    state.player_hp -= dmg
+    state.log.append(f"敵の攻撃: プレイヤーに {dmg} ダメージ。")
+
+# --- 勝敗判定 ---
+def check_end(state: State) -> str:
+    if state.enemy_hp <= 0 and state.player_hp <= 0:
+        return "draw"
+    if state.enemy_hp <= 0:
+        return "player_win"
+    if state.player_hp <= 0:
+        return "enemy_win"
+    return ""
+
+# --- 表示ユーティリティ ---
+def print_state(state: State):
+    print("-" * 40)
+    print(f"ターン: {state.turn}  プレイヤーHP: {state.player_hp}  敵HP: {state.enemy_hp}")
+    print("手札:")
+    for i, c in enumerate(state.hand):
+        print(f"  [{i}] {c.name} - {c.desc}")
+    print(f"山札: {len(state.deck)}枚  捨て札: {len(state.discard)}枚")
+    print("-" * 40)
+    # 最近のログは直近3件だけ出す
+    for entry in state.log[-4:]:
+        print(">>", entry)
+    state.log.clear()
+
+# --- CLI ループ（ゲーム進行） ---
+def cli_loop():
+    deck = make_deck()
+    shuffle(deck)
+    state = State(player_hp=30, enemy_hp=30, deck=deck)
+    draw(state, 5)  # 初期手札
+
+    while True:
+        print_state(state)
+        end = check_end(state)
+        if end:
+            if end == "player_win":
+                print("プレイヤーの勝ち！")
+            elif end == "enemy_win":
+                print("敵の勝ち！")
+            else:
+                print("引き分け！")
+            break
+
+        # プレイヤーターン
+        cmd = input("コマンド(play n / draw / pass / show): ").strip().split()
+        if not cmd:
+            continue
+        if cmd[0] == "play":
+            if len(cmd) < 2 or not cmd[1].isdigit():
+                print("使うカード番号を指定: play 0")
+                continue
+            idx = int(cmd[1])
+            play_card_by_index(state, idx)
+        elif cmd[0] == "draw":
+            draw(state, 1)
+        elif cmd[0] == "pass":
+            state.log.append("プレイヤーはターンを終了した。")
+            # 敵ターンへ
+            enemy_turn(state)
+            state.turn += 1
+        elif cmd[0] == "show":
+            # 詳細表示
+            print("デッキ中:")
+            for c in state.deck: print("  ", c.name)
+            print("捨て札:")
+            for c in state.discard: print("  ", c.name)
+        else:
+            print("不明なコマンド")
+
+# --- 実行 ---
+if __name__ == "__main__":
+    cli_loop()
+
+

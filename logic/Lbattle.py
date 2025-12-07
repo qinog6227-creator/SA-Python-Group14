@@ -1,20 +1,22 @@
 import random
 import Lparameter
 
-# --- 表示担当 ---
+#ステータスを表示する
 def show_battleStatus(e_hp, p_hp, stockA): 
-    print("\n--------------------------------")
+    print("----------------------------------")
     print(f"敵のHP    : {e_hp}")
     print(f"プレイヤー: {p_hp}")
     print(f"溜め攻撃力: {stockA}")
-    print("--------------------------------")
 
+
+#コマンド一覧を表示
 def show_battleCommand():
     print("-----コマンド-----")
     print("d: ドロー継続")
     print("c: 攻撃実行！")
     print("q: ドロー終了 (敵のターンへ)")
     
+# コマンド入力&実行結果を表示
 def show_attack(card, heal): 
     if card == 1:
         print(">> 【剣】を引いた！ 攻撃力をチャージ！")
@@ -22,6 +24,7 @@ def show_attack(card, heal):
         print(f">> 【回復】を引いた！ HPが {heal} 回復した！")
     elif card == 3:
         print(">> 【ドクロ】... 溜め攻撃没収 & 強制終了！")
+
 
 # --- メイン関数 ---
 def main():
@@ -39,6 +42,7 @@ def main():
 
         # 2. 入力
         command = input("コマンドを入力してください: ")
+        print("")
 
         # 3. 判定と計算
         if command == 'd':
@@ -47,7 +51,7 @@ def main():
                 deck = Lparameter.DECK_LIST.copy()
                 print(">> 山札補充！")
 
-            # ドロー処理（解説した3行）
+            # 札をランダムに取り出す
             card = random.choice(deck)
             deck.remove(card)
 
@@ -64,7 +68,7 @@ def main():
                     player_hp = Lparameter.PLAYER_MAX_HP
             elif card == 3:
                 stock_attack = 0
-                command = 'q'
+                command = 'q' #敵の攻撃へ移行
         
         if command == 'c':
             print(">> 攻撃実行！")
@@ -72,8 +76,9 @@ def main():
             
             enemy_hp -= stock_attack
             stock_attack = 0
-            command = 'q'
+            command = 'q' #敵の攻撃へ移行
 
+        #自分のターンが終了して、敵の攻撃へ移行
         if command == 'q':
             # 敵が生きているなら攻撃してくる
             if enemy_hp > 0:
@@ -81,8 +86,7 @@ def main():
                 print(f">> {Lparameter.ENEMY_POWER} ダメージを受けた！")
                 player_hp -= Lparameter.ENEMY_POWER
             
-
-        # ★勝敗判定
+        # 勝敗判定
         if enemy_hp <= 0:
             print("\n******* 勝ち！ *******")
             break
