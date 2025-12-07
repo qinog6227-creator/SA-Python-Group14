@@ -12,6 +12,13 @@ amout_win = 0
 result_battle = "none"
 
 Ltitle.title_draw() #Ltitleのtile_draw関数を実行
+#do-while文と同じ働きをする
+while True:
+    gameStart = input("press [s + Enter] to START:")
+    if gameStart == "s":
+        break  # 正しい入力ならループを抜ける
+
+gameStart = 'a'
 while True:
     gameStart = input("王様：魔王を倒してくれるかのう？ [y + Enter]: ")
     if gameStart == "y":
