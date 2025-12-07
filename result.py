@@ -1,3 +1,5 @@
+import battle_parameter
+
 print('バトル中のメニュー画面')
 print('1. 攻撃')
 print('2. 防御')   
