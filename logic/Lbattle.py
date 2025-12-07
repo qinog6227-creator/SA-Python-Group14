@@ -1,88 +1,92 @@
 import random
+import Lparameter
 
-# ==========================================
-# 1. 設定・データエリア (Config)
-#    C言語の #define や 構造体定義 みたいな場所
-# ==========================================
-MAX_HP = 30
-DECK_INIT = [1, 1, 1, 2, 3, 4]  # 1:剣, 2:回復...
+# --- 表示担当の関数たち ---
+def show_battleStatus(e_hp, p_hp, stockA): # ★ここも引数で受け取るように変更
+    print("\n--------------------------------") # ★見やすく改行追加
+    print("敵のHP    :", e_hp)
+    print("プレイヤーのHP:", p_hp)
+    print("溜め攻撃力:", stockA)
+    print("--------------------------------")
 
-# ==========================================
-# 2. ロジック関数エリア (Logic)
-#    計算だけする。printは絶対しない！
-#    C言語の int calc_damage(...) みたいな場所
-# ==========================================
-
-def init_game():
-    # 最初のデータを作る
-    return {
-        "p_hp": MAX_HP,
-        "e_hp": 50,
-        "stock": 0,
-        "deck": list(DECK_INIT) # コピーして使う
-    }
-
-def draw_card(state):
-    # カードを引いて計算する
-    if len(state["deck"]) == 0:
-        state["deck"] = list(DECK_INIT) # 山札補充
+def show_battleCommand():
+    print("-----コマンド-----")
+    print("ドロー継続：d + Enter")
+    print("攻撃実行！：a + Enter")
+    print("回復実行！：c + Enter")
+    print("ドロー終了：q + Enter")
     
-    card = random.choice(state["deck"])
-    state["deck"].remove(card) # 引いたカードを消す
-    
-    msg = ""
-    # --- ここに効果のif文を書く ---
+def show_attack(card, heal): 
+    # ★引いたカードの番号(card)によって分岐
     if card == 1:
-        state["stock"] += 1
-        msg = "剣を引いた！攻撃力チャージ！"
+        print(">> 【剣】を引いた！ 攻撃力を溜めます！")
     elif card == 2:
-        state["p_hp"] += 5
-        msg = "回復薬！HPが回復した"
+        print(">> 【回復】を引いた！ HPが", heal ,"回復した！")
+    elif card == 3:
+        print(">> 【ドクロ】を引いた... 札を失ってしまった…")
+
+# --- メイン関数 ---
+def main():
+    # ★変数は main の中で作るのが Python のお作法
+    player_hp = Lparameter.PLAYER_MAX_HP #プレイヤーのHP
+    enemy_hp = Lparameter.ENEMY_MAX_HP #敵のHP
+    deck = Lparameter.DECK_LIST.copy() #デッキ
+    stock_attack = 0 #攻撃を溜めた量
+    
+    print("敵が現れた！")
+
+    # ★ゲームはずっと続くので while True で囲む
+    while True:
+        # 1. 現状表示
+        show_battleStatus(enemy_hp, player_hp, stock_attack)
+        show_battleCommand()
+
+        # 2. 入力（★ここで変数 command に入れる！）
+        command = input("コマンドを入力してください: ")
+
+        # 3. 判定と計算
+        if command == 'd':
+            # ★ここで初めてカードを引く（ロジック）
+            if len(deck) == 0:
+                deck = Lparameter.DECK_LIST.copy() # 山札補充
+                print(">> 山札補充！")
+
+            card = random.choice(deck)
+            deck.remove(card) # 引いたら消す
+
+            # ★引いたカードを「表示関数」に渡す
+            show_attack(card, 1)
+
+            # ★計算（パラメータの更新）
+            if card == 1:
+                stock_attack += 1
+            elif card == 2:
+                player_hp += 1 # 仮の回復量
+            elif card == 3:
+                stock_attack = 0 #攻撃を溜めた量を失う
         
-    return state, msg
+        if command == 'c':
+           print("攻撃実行！")
+           print("敵に", stock_attack*1, "ダメージを与えた！")
+           enemy_hp -= (stock_attack*1)
+           
 
-# ==========================================
-# 3. 表示関数エリア (View)
-#    画面を表示する。計算はしない！
-#    明日は「ここだけ」をPygameに書き換える
-# ==========================================
 
-def show_screen(state, message):
-    # 画面をクリア（改行をいっぱい入れてクリアっぽく見せる技）
-    print("\n" * 50) 
-    
-    print("--------------------------------")
-    print(f" 勇者HP: {state['p_hp']}   VS   魔王HP: {state['e_hp']}")
-    print(f" 溜め攻撃力: {state['stock']}")
-    print("--------------------------------")
-    print(f"【状況】 {message}")
-    print("--------------------------------")
 
-# ==========================================
-# 4. メイン実行エリア (Main Loop)
-#    司令塔。whileループで回す
-# ==========================================
 
-# ゲーム開始の準備
-current_state = init_game()
-current_msg = "ゲームスタート！Enterを押してね"
 
-while True:
-    # (1) 画面を表示させる
-    show_screen(current_state, current_msg)
-    
-    # (2) 入力を待つ
-    key = input("コマンド (Enter:ドロー / q:終了) >> ")
-    
-    if key == "q":
-        print("ゲーム終了")
-        break
-        
-    # (3) ロジックを呼んで計算させる
-    # 返ってきた新しいデータ(new_state)で情報を更新する
-    current_state, current_msg = draw_card(current_state)
-    
-    # (4) 死亡判定など
-    if current_state["e_hp"] <= 0:
-        print("勝利！")
-        break
+
+
+
+
+        # ★勝敗判定
+        if enemy_hp <= 0:
+            print("勝ち！")
+            break
+        if player_hp <= 0:
+            print("負け...")
+            break
+
+# 実行
+if __name__ == "__main__":
+    main()
