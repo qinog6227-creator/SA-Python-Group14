@@ -26,7 +26,7 @@ def map_draw2():
     print("")
 
 def map_draw3():
-    print
+    print("") 
     print("-----Map--------------")
     print("★：クリア地点    ☆：NEXT")   
     print("★----★-----★-----☆")
