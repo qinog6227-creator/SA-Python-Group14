@@ -1,99 +1,96 @@
 import random
 import Lparameter
 
-# --- 表示担当の関数たち ---
-def show_battleStatus(e_hp, p_hp, stockA): # ★ここも引数で受け取るように変更
-    print("\n--------------------------------") # ★見やすく改行追加
-    print("敵のHP    :", e_hp)
-    print("プレイヤーのHP:", p_hp)
-    print("溜め攻撃力:", stockA)
+# --- 表示担当 ---
+def show_battleStatus(e_hp, p_hp, stockA): 
+    print("\n--------------------------------")
+    print(f"敵のHP    : {e_hp}")
+    print(f"プレイヤー: {p_hp}")
+    print(f"溜め攻撃力: {stockA}")
     print("--------------------------------")
 
 def show_battleCommand():
     print("-----コマンド-----")
-    print("ドロー継続：d + Enter")
-    print("攻撃実行！：c + Enter")
-    print("ドロー終了：q + Enter")
+    print("d: ドロー継続")
+    print("c: 攻撃実行！")
+    print("q: ドロー終了 (敵のターンへ)")
     
 def show_attack(card, heal): 
-    # ★引いたカードの番号(card)によって分岐
     if card == 1:
-        print(">> 【剣】を引いた！ 攻撃力を溜めます！")
+        print(">> 【剣】を引いた！ 攻撃力をチャージ！")
     elif card == 2:
-        print(">> 【回復】を引いた！ HPが", heal ,"回復した！")
+        print(f">> 【回復】を引いた！ HPが {heal} 回復した！")
     elif card == 3:
-        print(">> 【ドクロ】を引いた... 札を失ってしまった…")
+        print(">> 【ドクロ】... 溜め攻撃没収 & 強制終了！")
 
 # --- メイン関数 ---
 def main():
-    # ★変数は main の中で作るのが Python のお作法
-    player_hp = Lparameter.PLAYER_MAX_HP #プレイヤーのHP
-    enemy_hp = Lparameter.ENEMY_MAX_HP #敵のHP
-    deck = Lparameter.DECK_LIST.copy() #デッキ
-    stock_attack = 0 #攻撃を溜めた量
+    player_hp = Lparameter.PLAYER_MAX_HP
+    enemy_hp = Lparameter.ENEMY_MAX_HP
+    deck = Lparameter.DECK_LIST.copy()
+    stock_attack = 0 
     
     print("敵が現れた！")
 
-    # ★ゲームはずっと続くので while True で囲む
     while True:
-        # 1. 現状表示
+        # 1. 表示
         show_battleStatus(enemy_hp, player_hp, stock_attack)
         show_battleCommand()
 
-        # 2. 入力（★ここで変数 command に入れる！）
+        # 2. 入力
         command = input("コマンドを入力してください: ")
 
         # 3. 判定と計算
         if command == 'd':
-            # ★ここで初めてカードを引く（ロジック）
+            # 山札補充
             if len(deck) == 0:
-                deck = Lparameter.DECK_LIST.copy() # 山札補充
+                deck = Lparameter.DECK_LIST.copy()
                 print(">> 山札補充！")
 
+            # ドロー処理（解説した3行）
             card = random.choice(deck)
-            deck.remove(card) # 引いたら消す
+            deck.remove(card)
 
-            # ★引いたカードを「表示関数」に渡す
-            show_attack(card, 1)
+            # 結果表示
+            show_attack(card, Lparameter.HEAL_VALUE)
 
-            # ★計算（パラメータの更新）
+            # 計算
             if card == 1:
-                stock_attack += 1
+                stock_attack += Lparameter.SWORD_POWER
             elif card == 2:
-                player_hp += 1 # 仮の回復量
+                player_hp += Lparameter.HEAL_VALUE
+                # 最大HPを超えないようにする（親切設計）
+                if player_hp > Lparameter.PLAYER_MAX_HP:
+                    player_hp = Lparameter.PLAYER_MAX_HP
             elif card == 3:
-                stock_attack = 0 #攻撃を溜めた量を失う
-                command = 'q'
+                stock_attack = 0
+                command = 'q' # ★修正1：代入なので「=」を使う！
         
         if command == 'c':
-           print("攻撃実行！")
-           print("敵に", stock_attack*1, "ダメージを与えた！")
-           enemy_hp -= (stock_attack*1)
-           stock_attack = 0
-           command == 'q'
+            print(">> 攻撃実行！")
+            # ★修正2：int()で整数にする
+            damage = int(stock_attack * 1.15) 
+            print(f">> 敵に {damage} ダメージを与えた！")
+            
+            enemy_hp -= damage
+            stock_attack = 0
+            command = 'q' # ★修正1：ここも「=」！
 
         if command == 'q':
-            print("敵の攻撃！")
-            print("2ダメージを受けた！")
-            player_hp -= 2
-           
-
-
-
-
-
-
-
-
+            # 敵が生きているなら攻撃してくる
+            if enemy_hp > 0:
+                print("\n>> 敵の攻撃！")
+                print(f">> {Lparameter.ENEMY_POWER} ダメージを受けた！")
+                player_hp -= Lparameter.ENEMY_POWER
+            
 
         # ★勝敗判定
         if enemy_hp <= 0:
-            print("勝ち！")
+            print("\n******* 勝ち！ *******")
             break
         if player_hp <= 0:
-            print("負け...")
+            print("\n*** 負け... ***")
             break
 
-# 実行
 if __name__ == "__main__":
     main()
