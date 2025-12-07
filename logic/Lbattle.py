@@ -43,7 +43,7 @@ def main():
         # 3. 判定と計算
         if command == 'd':
             # 山札補充
-            if len(deck) == 0:
+            if len(deck) == 0: #配列の要素数(len関数で計測)が0ならば
                 deck = Lparameter.DECK_LIST.copy()
                 print(">> 山札補充！")
 
@@ -59,22 +59,20 @@ def main():
                 stock_attack += Lparameter.SWORD_POWER
             elif card == 2:
                 player_hp += Lparameter.HEAL_VALUE
-                # 最大HPを超えないようにする（親切設計）
+                # 最大HPを超えないようにする
                 if player_hp > Lparameter.PLAYER_MAX_HP:
                     player_hp = Lparameter.PLAYER_MAX_HP
             elif card == 3:
                 stock_attack = 0
-                command = 'q' # ★修正1：代入なので「=」を使う！
+                command = 'q'
         
         if command == 'c':
             print(">> 攻撃実行！")
-            # ★修正2：int()で整数にする
-            damage = int(stock_attack * 1.15) 
-            print(f">> 敵に {damage} ダメージを与えた！")
+            print(f">> 敵に {stock_attack} ダメージを与えた！")
             
-            enemy_hp -= damage
+            enemy_hp -= stock_attack
             stock_attack = 0
-            command = 'q' # ★修正1：ここも「=」！
+            command = 'q'
 
         if command == 'q':
             # 敵が生きているなら攻撃してくる
