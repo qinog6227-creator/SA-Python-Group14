@@ -2,12 +2,14 @@ import Ltitle
 import Lmap
 import Lbattle
 import Lresult
+import Lbattle
 
 gameStart = 'a'
 mapForward1 = 'a'
 mapForward2 = 'a'
 mapForward3 = 'a'
-
+amout_win = 0
+result_battle = "none"
 
 Ltitle.title_draw() #Ltitleのtile_draw関数を実行
 while True:
@@ -24,7 +26,10 @@ if gameStart == 'y':
         mapForward1 = input("先へ進みますか？ [y + Enter]: ")
         if mapForward1 == "y":
             break  # 正しい入力ならループを抜ける
-
+    print("") 
+    result_battle = Lbattle.battle
+    if result_battle != "win":
+        Lresult.losing()
 
 if mapForward1 == 'y':
     Lmap.map2_draw()
@@ -32,6 +37,10 @@ if mapForward1 == 'y':
         mapForward2 = input("先へ進みますか？ [y + Enter]: ")
         if mapForward2 == "y":
             break  # 正しい入力ならループを抜ける
+    print("") 
+    result_battle = Lbattle.battle
+    if result_battle != "win":
+        Lresult.losing()
 
 
 if mapForward2 == 'y':
@@ -40,6 +49,9 @@ if mapForward2 == 'y':
         mapForward3 = input("先へ進みますか？ [y + Enter]: ")
         if mapForward3 == "y":
             break  # 正しい入力ならループを抜ける
+    print("") 
+    result_battle = Lbattle.battle
+    if result_battle != "win":
+        Lresult.losing()
 
-print("") 
 print("王様：よくぞ魔王を倒してくれた！お前にこの国の宝をやろう！")
