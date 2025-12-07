@@ -26,8 +26,12 @@ def show_attack(card, heal):
         print(">> 【ドクロ】... 溜め攻撃没収 & 強制終了！")
 
 
+# メッセージ一覧
+#　普通の敵、魔王遭遇
+
+
 # --- メイン関数 ---
-def main():
+def battle():
     player_hp = Lparameter.PLAYER_MAX_HP
     enemy_hp = Lparameter.ENEMY_MAX_HP
     deck = Lparameter.DECK_LIST.copy()
@@ -88,11 +92,9 @@ def main():
             
         # 勝敗判定
         if enemy_hp <= 0:
-            print("\n******* 勝ち！ *******")
-            break
+            print("\n******* 勝ち！ *******") 
+            return  "win"  
+        
         if player_hp <= 0:
             print("\n*** 負け... ***")
-            break
-
-if __name__ == "__main__":
-    main()
+            return "lose"
