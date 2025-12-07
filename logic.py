@@ -35,33 +35,35 @@ def map_draw3():
 
 tile_draw()
 while True:
-    gameStart= input("王様：魔王を倒してくれるかのう？ [y + Enter]: ")
+    gameStart = input("王様：魔王を倒してくれるかのう？ [y + Enter]: ")
     if gameStart == "y":
         break  # 正しい入力ならループを抜ける
-    print("王様：魔王を倒してくれるかのう？ [y+ Enter]: ")
-    # ここでループの先頭に戻って、もう一度 input させる
+
 
 # ここに来た時点で select には必ず "y" が入ってる
 if gameStart == 'y':
     print("ゲームスタート！")
     map_draw1()
-
     while True:
-        gameStart= input("先へ進みますか？ [y + Enter]: ")
-        if gameStart1 == "y":
+        mapForward1 = input("先へ進みますか？ [y + Enter]: ")
+        if mapForward1 == "y":
             break  # 正しい入力ならループを抜ける
-    map_draw1()
-    print("先へ進みますか？ [y+ Enter]: ")
-    # ここでループの先頭に戻って、もう一度 input させる
 
 
-if mapForward == 'y':
+if mapForward1 == 'y':
     map_draw2()
-
     while True:
-        gameStart= input("先へ進みますか？ [y + Enter]: ")
-        if gameStart == "y":
+        mapForward2 = input("先へ進みますか？ [y + Enter]: ")
+        if mapForward2 == "y":
             break  # 正しい入力ならループを抜ける
-    map_draw2()
-    print("先へ進みますか？ [y+ Enter]: ")
-    # ここでループの先頭に戻って、もう一度 input させる
+
+
+if mapForward2 == 'y':
+    map_draw3()
+    while True:
+        mapForward3 = input("先へ進みますか？ [y + Enter]: ")
+        if mapForward3 == "y":
+            break  # 正しい入力ならループを抜ける
+
+print("") 
+print("王様：よくぞ魔王を倒してくれた！お前にこの国の宝をやろう！")
