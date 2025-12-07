@@ -1,72 +1,88 @@
 import random
-import Lparameter
 
-# --- 1. 変数の準備（C言語の int hp = 10; と同じ） ---
-player_hp = Lparameter.PLAYER_MAX_HP
-enemy_hp = Lparameter.ENEMY_MAX_HP
-deck = Lparameter.DECK_LIST.copy()  # 山札（デッキ）
+# ==========================================
+# 1. 設定・データエリア (Config)
+#    C言語の #define や 構造体定義 みたいな場所
+# ==========================================
+MAX_HP = 30
+DECK_INIT = [1, 1, 1, 2, 3, 4]  # 1:剣, 2:回復...
 
-stock_damage = 0 # 溜めている攻撃力
-stock_carryOut = 0 # 溜めている攻撃力を実際に使うときの変数
+# ==========================================
+# 2. ロジック関数エリア (Logic)
+#    計算だけする。printは絶対しない！
+#    C言語の int calc_damage(...) みたいな場所
+# ==========================================
 
-print("--- バトルスタート ---")
+def init_game():
+    # 最初のデータを作る
+    return {
+        "p_hp": MAX_HP,
+        "e_hp": 50,
+        "stock": 0,
+        "deck": list(DECK_INIT) # コピーして使う
+    }
 
-# --- 2. バトルのメイン(無限)ループ ---
-def battle_status():
-    print("")
-    print("\n--------------------------------")
-    print("敵のHP    :", enemy_hp)
-    print("")
-    print("プレイヤーのHP:", player_hp)
-    print("溜め攻撃力:", stock_damage)
-    print("--------------------------------")
-    print("")
-
-def battle_command():
-    print("")
-    print("-----コマンド-----")
-    print("ドロー：d + Enter")
-    print("ドロー終了：q + Enter")
-    print("カード実行：c + Enter")
-    input("コマンドを入力してください: ")
-
-    # --- 3. 山札からカードを引く処理 ---
-    if len(deck) == 0:
-        print("山札がなくなった！リシャッフルします！")
-        deck = [1, 1, 1, 2, 2, 3, 3, 4, 4] # 山札を元に戻す
-
-    # random.choice は「配列からランダムに1個選ぶ」命令
-    card = random.choice(deck)
-
-    # --- 4. 引いたカードごとの動き（C言語の if ~ else if と同じ） ---
+def draw_card(state):
+    # カードを引いて計算する
+    if len(state["deck"]) == 0:
+        state["deck"] = list(DECK_INIT) # 山札補充
+    
+    card = random.choice(state["deck"])
+    state["deck"].remove(card) # 引いたカードを消す
+    
+    msg = ""
+    # --- ここに効果のif文を書く ---
     if card == 1:
-        print("【剣】を引いた！ 攻撃力を溜めます！")
-        stock_damage = stock_damage + 1
-
+        state["stock"] += 1
+        msg = "剣を引いた！攻撃力チャージ！"
     elif card == 2:
-        print("【回復】を引いた！ HPが1回復！")
-        player_hp = player_hp + 1
+        state["p_hp"] += 5
+        msg = "回復薬！HPが回復した"
+        
+    return state, msg
 
-    elif card == 3:
-        print("【姫】を引いた！ 溜めた攻撃を放て！！")
-        # 敵のHPを減らす
-        print("敵に", stock_damage, "のダメージ！")
-        enemy_hp = enemy_hp - stock_damage
-        stock_damage = 0  # 攻撃したのでストックは0に戻る
+# ==========================================
+# 3. 表示関数エリア (View)
+#    画面を表示する。計算はしない！
+#    明日は「ここだけ」をPygameに書き換える
+# ==========================================
 
-    elif card == 4:
-        print("【ドクロ】を引いた... 攻撃失敗＆ダメージを受ける！")
-        stock_damage = 0  # 溜めた攻撃がパァになる
-        player_hp = player_hp - 2
-        print("あなたは2ダメージ受けた...")
+def show_screen(state, message):
+    # 画面をクリア（改行をいっぱい入れてクリアっぽく見せる技）
+    print("\n" * 50) 
+    
+    print("--------------------------------")
+    print(f" 勇者HP: {state['p_hp']}   VS   魔王HP: {state['e_hp']}")
+    print(f" 溜め攻撃力: {state['stock']}")
+    print("--------------------------------")
+    print(f"【状況】 {message}")
+    print("--------------------------------")
 
-    # --- 5. 勝敗判定 ---
-    if enemy_hp <= 0:
-        print("\nやった！ 敵を倒した！ あなたの勝ち！")
-        break  # ループを抜けて終了
+# ==========================================
+# 4. メイン実行エリア (Main Loop)
+#    司令塔。whileループで回す
+# ==========================================
 
-    if player_hp <= 0:
-        print("\n残念... あなたは負けてしまった...")
-        break  # ループを抜けて終了
+# ゲーム開始の準備
+current_state = init_game()
+current_msg = "ゲームスタート！Enterを押してね"
 
-print("--- ゲーム終了 ---")
+while True:
+    # (1) 画面を表示させる
+    show_screen(current_state, current_msg)
+    
+    # (2) 入力を待つ
+    key = input("コマンド (Enter:ドロー / q:終了) >> ")
+    
+    if key == "q":
+        print("ゲーム終了")
+        break
+        
+    # (3) ロジックを呼んで計算させる
+    # 返ってきた新しいデータ(new_state)で情報を更新する
+    current_state, current_msg = draw_card(current_state)
+    
+    # (4) 死亡判定など
+    if current_state["e_hp"] <= 0:
+        print("勝利！")
+        break
