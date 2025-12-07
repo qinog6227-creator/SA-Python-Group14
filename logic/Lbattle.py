@@ -95,5 +95,6 @@ def battle():
             print("\n*** 負け... ***")
             return "lose"
         
-
-battle()
+# おまじない
+if __name__ == "__main__":
+    battle()

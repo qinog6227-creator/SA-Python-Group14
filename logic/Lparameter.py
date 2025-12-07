@@ -2,7 +2,7 @@
 
 # --- パラメータ設定 ---
 PLAYER_MAX_HP = 30
-ENEMY_MAX_HP = 50
+ENEMY_MAX_HP = 5
 
 # --- カードの効果 ---
 SWORD_POWER = 1    # 剣1枚で溜まる攻撃力

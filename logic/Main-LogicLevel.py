@@ -12,6 +12,7 @@ amout_win = 0
 result_battle = "none"
 
 Ltitle.title_draw() #Ltitleのtile_draw関数を実行
+print(result_battle)
 while True:
     gameStart = input("王様：魔王を倒してくれるかのう？ [y + Enter]: ")
     if gameStart == "y":
@@ -27,9 +28,10 @@ if gameStart == 'y':
         if mapForward1 == "y":
             break  # 正しい入力ならループを抜ける
     print("") 
-    result_battle = Lbattle.battle
-    if result_battle != "win":
+    result_battle = Lbattle.battle()
+    if result_battle == "lose":
         Lresult.losing()
+        exit()
 
 if mapForward1 == 'y':
     Lmap.map2_draw()
@@ -38,10 +40,10 @@ if mapForward1 == 'y':
         if mapForward2 == "y":
             break  # 正しい入力ならループを抜ける
     print("") 
-    result_battle = Lbattle.battle
-    if result_battle != "win":
+    result_battle = Lbattle.battle()
+    if result_battle == "lose":
         Lresult.losing()
-
+        exit()
 
 if mapForward2 == 'y':
     Lmap.map3_draw()
@@ -50,8 +52,9 @@ if mapForward2 == 'y':
         if mapForward3 == "y":
             break  # 正しい入力ならループを抜ける
     print("") 
-    result_battle = Lbattle.battle
-    if result_battle != "win":
+    result_battle = Lbattle.battle()
+    if result_battle == "lose":
         Lresult.losing()
+        exit()
 
 print("王様：よくぞ魔王を倒してくれた！お前にこの国の宝をやろう！")
