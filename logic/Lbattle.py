@@ -26,6 +26,10 @@ def show_attack(card, heal):
         print(">> 【ドクロ】... 溜め攻撃没収 & 強制終了！")
 
 
+# メッセージ一覧
+#　普通の敵、魔王遭遇
+
+
 # --- メイン関数 ---
 def battle():
     player_hp = Lparameter.PLAYER_MAX_HP
