@@ -12,8 +12,7 @@ def show_battleStatus(e_hp, p_hp, stockA): # ★ここも引数で受け取る�
 def show_battleCommand():
     print("-----コマンド-----")
     print("ドロー継続：d + Enter")
-    print("攻撃実行！：a + Enter")
-    print("回復実行！：c + Enter")
+    print("攻撃実行！：c + Enter")
     print("ドロー終了：q + Enter")
     
 def show_attack(card, heal): 
@@ -64,11 +63,19 @@ def main():
                 player_hp += 1 # 仮の回復量
             elif card == 3:
                 stock_attack = 0 #攻撃を溜めた量を失う
+                command = 'q'
         
         if command == 'c':
            print("攻撃実行！")
            print("敵に", stock_attack*1, "ダメージを与えた！")
            enemy_hp -= (stock_attack*1)
+           stock_attack = 0
+           command == 'q'
+
+        if command == 'q':
+            print("敵の攻撃！")
+            print("2ダメージを受けた！")
+            player_hp -= 2
            
 
 
