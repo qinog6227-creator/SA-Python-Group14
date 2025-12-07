@@ -12,7 +12,6 @@ amout_win = 0
 result_battle = "none"
 
 Ltitle.title_draw() #Ltitleのtile_draw関数を実行
-print(result_battle)
 while True:
     gameStart = input("王様：魔王を倒してくれるかのう？ [y + Enter]: ")
     if gameStart == "y":

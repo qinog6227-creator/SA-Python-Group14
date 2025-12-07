@@ -94,7 +94,3 @@ def battle():
         if player_hp <= 0:
             print("\n*** 負け... ***")
             return "lose"
-        
-# おまじない
-if __name__ == "__main__":
-    battle()
