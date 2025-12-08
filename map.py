@@ -37,11 +37,11 @@ while in_map:
                     break
 
     #背景
-    screen.fill((128, 128, 128))
+    screen.fill((0, 0, 0))
 
     #線
     pygame.draw.lines(
-        screen, (0, 0, 0), False,
+        screen, (255, 255, 255), False,
         [e["pos"] for e in enemies],
         3
     )
