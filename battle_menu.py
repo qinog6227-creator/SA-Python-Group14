@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+import os
 
 # ------------------ 設定 ------------------
 SCREEN_W, SCREEN_H = 800, 600
@@ -14,6 +15,13 @@ UI_FONT_NAME = "meiryo"  # 例: "Noto Sans CJK JP", "Yu Gothic", "Hiragino Kaku 
 DECK_PANEL_W, DECK_PANEL_H = 520, 420
 DECK_ROW_H = 28
 
+# BASE が未定義でも動作するよう初期化（既存プロジェクトに BASE があるならそちらを使ってください）
+try:
+    BASE  # type: ignore
+except NameError:
+    BASE = os.path.dirname(__file__)
+TITLE_IMG_PATH = os.path.join(BASE, "pictures", "battle", "132.jpg")
+
 # ------------------ ユーティリティ ------------------
 def jp_font(size):
     """日本語フォントがない環境でも落ちないようにフォールバック"""
@@ -21,6 +29,19 @@ def jp_font(size):
         return pygame.font.SysFont(UI_FONT_NAME, size)
     except Exception:
         return pygame.font.SysFont(None, size)
+
+def load_skull_image(path: str):
+    """指定パスの画像を読み込む。失敗時は None を返す"""
+    try:
+        if path and os.path.exists(path):
+            img = pygame.image.load(path).convert_alpha()
+            return img
+    except Exception:
+        pass
+    return None
+
+# グローバルに画像参照を保持
+SKULL_IMG_ORIG = None  # 元画像（読み込み成功時に設定）
 
 # ------------------ カード定義 ------------------
 class Card:
@@ -31,6 +52,21 @@ class Card:
         self.pos = (0, 0)  # 手札描画位置
         self.is_skull = is_skull
         self.ctype = ctype  # "Attack", "Skill", "Power", "Curse" 等
+        self._image = None  # カード面に描く画像（ドクロ用）
+
+        # ドクロカードなら画像をカードサイズにフィットさせて保持
+        if self.is_skull and SKULL_IMG_ORIG is not None:
+            self._image = self._fit_image_to_card(SKULL_IMG_ORIG)
+
+    def _fit_image_to_card(self, img, padding=8):
+        """カード面に収まるように比率維持で縮小"""
+        cw, ch = self.size
+        max_w = max(1, cw - padding * 2)
+        max_h = max(1, ch - padding * 2)
+        iw, ih = img.get_width(), img.get_height()
+        scale = min(max_w / iw, max_h / ih)
+        new_size = (max(1, int(iw * scale)), max(1, int(ih * scale)))
+        return pygame.transform.smoothscale(img, new_size)
 
     def draw(self, surface, font):
         """通常（手札）描画"""
@@ -39,8 +75,16 @@ class Card:
         rect = pygame.Rect(x, y, w, h)
         pygame.draw.rect(surface, self.color, rect, border_radius=8)
         pygame.draw.rect(surface, (40, 40, 80), rect, width=2, border_radius=8)
-        name_surf = font.render(f"{self.name}", True, (20, 20, 20))
-        surface.blit(name_surf, (x + 8, y + 8))
+
+        if self.is_skull and self._image is not None:
+            # 画像を中央に配置（絵文字は使わない）
+            img = self._image
+            ir = img.get_rect(center=rect.center)
+            surface.blit(img, ir.topleft)
+        else:
+            # 通常カードはテキスト名
+            name_surf = font.render(f"{self.name}", True, (20, 20, 20))
+            surface.blit(name_surf, (x + 8, y + 8))
 
     def render_surface(self, font):
         """ズーム用にカードをSurfaceとして生成"""
@@ -49,8 +93,14 @@ class Card:
         rect = pygame.Rect(0, 0, w, h)
         pygame.draw.rect(surf, self.color, rect, border_radius=8)
         pygame.draw.rect(surf, (40, 40, 80), rect, width=2, border_radius=8)
-        name_surf = font.render(f"{self.name}", True, (20, 20, 20))
-        surf.blit(name_surf, (8, 8))
+
+        if self.is_skull and self._image is not None:
+            img = self._image
+            ir = img.get_rect(center=rect.center)
+            surf.blit(img, ir.topleft)
+        else:
+            name_surf = font.render(f"{self.name}", True, (20, 20, 20))
+            surf.blit(name_surf, (8, 8))
         return surf
 
 # ------------------ 山札・手札・墓地管理 ------------------
@@ -62,7 +112,8 @@ def make_starting_deck():
     for i in range(5):
         deck.append(Card(name=f"Defend {i+1}", color=(220, 240, 220), ctype="Skill"))
     deck.append(Card(name="Bash", color=(240, 230, 200), ctype="Attack"))
-    skull = Card(name="💀 Skull", color=(80, 80, 80), is_skull=True, ctype="Curse")
+    # 絵文字は使わず、画像で表現
+    skull = Card(name="Skull", color=(80, 80, 80), is_skull=True, ctype="Curse")
     deck.append(skull)
     random.shuffle(deck)
     return deck
@@ -80,9 +131,9 @@ def draw_one(deck, hand, grave):
         return None
     if not deck:
         reshuffle_from_grave_if_needed(deck, grave)
-        if not deck:
-            return None
-    card = deck.pop()   # リスト末尾を「山札の上」とする
+    if not deck:
+        return None
+    card = deck.pop()  # リスト末尾を「山札の上」とする
     hand.append(card)
     if card.is_skull:
         return "SKULL_DRAWN"
@@ -111,9 +162,11 @@ def layout_hand(hand):
 
 # ------------------ ボタンクラス ------------------
 class Button:
-    def __init__(self, rect, text, font=None,
-                 bg=(70, 90, 140), hover_bg=(90, 120, 180), fg=(255, 255, 255),
-                 border=(230, 230, 255), disabled_bg=(80, 80, 80), disabled_fg=(200, 200, 200)):
+    def __init__(
+        self, rect, text, font=None,
+        bg=(70, 90, 140), hover_bg=(90, 120, 180), fg=(255, 255, 255),
+        border=(230, 230, 255), disabled_bg=(80, 80, 80), disabled_fg=(200, 200, 200)
+    ):
         self.rect = pygame.Rect(rect)
         self.text = text
         self.font = font or jp_font(28)
@@ -173,7 +226,6 @@ def draw_deck_icon(surface, rect, count, hover=False):
         pygame.draw.rect(surface, (200, 210, 240), r, width=2, border_radius=10)
     if hover:
         pygame.draw.rect(surface, (250, 240, 120), rect.inflate(8, 8), width=2, border_radius=12)
-
     font = jp_font(18)
     label = font.render(f"山札: {count}", True, (240, 240, 240))
     shadow = font.render(f"山札: {count}", True, (20, 20, 20))
@@ -220,12 +272,12 @@ def draw_deck_view(screen, deck, ui_font, item_font, scroll_offset=0):
     pygame.draw.rect(screen, (30, 40, 70), panel_rect, border_radius=12)
     pygame.draw.rect(screen, (230, 230, 255), panel_rect, width=2, border_radius=12)
 
-    # タイトルをシンプルに
+    # タイトル（絵文字は使わない）
     title = ui_font.render("山札", True, (240, 240, 240))
     screen.blit(title, (panel_rect.centerx - title.get_width() // 2, panel_rect.top + 10))
 
     close_font = jp_font(20)
-    # 閉じるボタンもシンプルに
+    # 閉じるボタン（絵文字なし）
     close_text = close_font.render("閉じる", True, (240, 220, 220))
     close_rect = close_text.get_rect()
     close_rect.topright = (panel_rect.right - 12, panel_rect.top + 12)
@@ -238,7 +290,6 @@ def draw_deck_view(screen, deck, ui_font, item_font, scroll_offset=0):
     items = deck_to_grouped_view_list(deck)
     row_h = DECK_ROW_H
     visible_rows = inner.h // row_h
-
     start_idx = max(0, min(len(items) - visible_rows, scroll_offset))
     end_idx = min(len(items), start_idx + visible_rows)
 
@@ -254,36 +305,53 @@ def draw_deck_view(screen, deck, ui_font, item_font, scroll_offset=0):
 
     hint = close_font.render("↑↓キー / マウスホイールでスクロール", True, (220, 220, 220))
     screen.blit(hint, (panel_rect.centerx - hint.get_width() // 2, panel_rect.bottom - 28))
-
     return {"panel_rect": panel_rect, "close_rect": close_rect, "inner_rect": inner, "visible_rows": visible_rows}
 
 # ------------------ ドクロのズーム演出 ------------------
 def draw_skull_zoom_overlay(screen, skull_card, card_font, scale=1.5, title_font=None):
-    """画面を薄暗くして、ドクロカードを中央にズーム表示"""
+    """画面を薄暗くして、ドクロカードを中央にズーム表示（画像のみを重視。絵文字は使わない）"""
     overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 160))
     screen.blit(overlay, (0, 0))
 
+    # カード面（枠）を拡大
     base_surf = skull_card.render_surface(card_font)
     w, h = skull_card.size
     scaled_w, scaled_h = int(w * scale), int(h * scale)
     scaled = pygame.transform.smoothscale(base_surf, (scaled_w, scaled_h))
-
     cx = SCREEN_W // 2
     cy = SCREEN_H // 2
     rect = scaled.get_rect(center=(cx, cy))
     screen.blit(scaled, rect.topleft)
 
+    # ドクロ画像があれば、画像だけをさらに鮮明に重ねる（render_surfaceの描画より上）
+    if getattr(skull_card, "_image", None) is not None:
+        img = skull_card._image
+        iw, ih = img.get_size()
+        img2 = pygame.transform.smoothscale(img, (int(iw * scale), int(ih * scale)))
+        ir = img2.get_rect(center=rect.center)
+        screen.blit(img2, ir.topleft)
+
     if title_font:
-        title = title_font.render("💀 ドクロ発動", True, (240, 220, 100))
+        # 絵文字は使わずに日本語タイトル
+        title = title_font.render("ドクロ発動", True, (240, 220, 100))
         screen.blit(title, (cx - title.get_width() // 2, rect.top - title.get_height() - 12))
 
 # ------------------ メインループ ------------------
 def main():
     pygame.init()
-    pygame.display.set_caption("山札ビュー＋ドクロズーム（シンプルラベル）")
+    pygame.display.set_caption("山札ビュー＋ドクロズーム（画像表示）")
     screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
     clock = pygame.time.Clock()
+
+    # 画像読み込み（ここでグローバルに設定）
+    global SKULL_IMG_ORIG
+    # プロジェクト既定の TITLE_IMG_PATH を優先
+    SKULL_IMG_ORIG = load_skull_image(TITLE_IMG_PATH)
+    if SKULL_IMG_ORIG is None:
+        # フォールバック：同ディレクトリ直下の 132.jpg を探す
+        fallback_path = os.path.join(os.path.dirname(__file__), "132.jpg")
+        SKULL_IMG_ORIG = load_skull_image(fallback_path)
 
     # フォント
     ui_font = jp_font(26)
@@ -319,10 +387,9 @@ def main():
     skull_anim_active = False
     skull_anim_card = None
     skull_anim_start_ms = 0
-    skull_anim_duration_ms = 2000  # 0.9秒表示
+    skull_anim_duration_ms = 2500  # 約2秒表示
 
     last_log = ""
-
     running = True
     while running:
         dt = clock.tick(FPS)
@@ -419,7 +486,7 @@ def main():
             grave.extend(hand)
             hand.clear()
             turn_active = False
-            last_log = "💀 ドクロ発動：手札をすべて墓地へ送り、ターン終了"
+            last_log = "ドクロ発動：手札をすべて墓地へ送り、ターン終了"
             skull_anim_active = False
             skull_anim_card = None
 
@@ -442,13 +509,11 @@ def main():
 
         # ------------------ 描画 ------------------
         screen.fill((15, 20, 35))
-
         info = ui_font.render(
-            f"Deck: {len(deck)}  Hand: {len(hand)}  Grave(墓地): {len(grave)}  / ターン: {'進行中' if turn_active else '終了'}",
+            f"Deck: {len(deck)} Hand: {len(hand)} Grave(墓地): {len(grave)} / ターン: {'進行中' if turn_active else '終了'}",
             True, (230, 230, 230)
         )
         screen.blit(info, (20, 20))
-
         log_surf = log_font.render(last_log, True, (220, 220, 180))
         screen.blit(log_surf, (20, 50))
 
