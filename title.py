@@ -1,23 +1,46 @@
-#ここは描画処理のみを行い、main.py内で呼び出す
-import pygame #おまじない
+import pygame
+import os
+import sys
 
-#タイトル画面を描画する関数を定義
-def draw_title(screen, font):
+pygame.init()
 
-    #画面の中心の座標を取得
-    w = screen.get_width() // 2
-    h = screen.get_height() // 2
+# 画面サイズ
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Title Screen")
 
-    #図形を描画していく
-    screen.fill((0, 0, 0)) #画面の色を設定
-    pygame.draw.rect(screen, (255, 0, 0), (w - 250, h - 150, 500, 300))  #四角形を描画
+# タイトル画像のパス
+BASE = os.path.dirname(__file__)
+TITLE_IMG_PATH = os.path.join(BASE, "pictures", "title", "title(ver1).png")
 
-    #テキストを出力
-    text = font.render("BozuMekuri × Card Battle", True, (255, 255, 255))
-    screen.blit(text, text.get_rect(center=(w, h - 50)))
+# タイトル画像読み込み
+title_img = pygame.image.load(TITLE_IMG_PATH).convert_alpha()
+title_img = pygame.transform.scale(title_img, (WIDTH, HEIGHT))
 
-    text = font.render("Heian Bozu Attack(Kari)", True, (255, 255, 255))
-    screen.blit(text, text.get_rect(center=(w, h + 10)))
+clock = pygame.time.Clock()
 
-    text = font.render("Press SPACE to Start", True, (255,255,255))
-    screen.blit(text, text.get_rect(center=(w, h + 100)))
+# 状態
+STATE_TITLE = 0
+STATE_GAME = 1
+state = STATE_TITLE
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+        # クリックで開始
+        if state == STATE_TITLE:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                state = STATE_GAME
+
+    # 描画
+    if state == STATE_TITLE:
+        screen.blit(title_img, (0, 0))
+
+    elif state == STATE_GAME:
+        screen.fill((0, 0, 0))
+
+    pygame.display.update()
+    clock.tick(60)
