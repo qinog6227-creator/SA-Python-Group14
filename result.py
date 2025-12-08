@@ -14,14 +14,6 @@ game_over_img = pygame.transform.scale(game_over_img, (800, 600))
 game_clear_img = pygame.transform.scale(game_clear_img, (800, 600))
 next_stage_img = pygame.transform.scale(next_stage_img, (800, 600))
 
-# ----------- 勝敗とステージをセット -----------
-# "win" または "lose"
-result = "win"     # ← 勝ち
-# result = "lose"  # ← 負け
-
-stage = 2          # ← 現在のステージ（1 / 2 / 3）
-# ----------------------------------------------
-
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
