@@ -10,9 +10,9 @@ clock = pygame.time.Clock()
 
 #敵の座標
 enemies = [
-    {"pos": (400, 150), "r": 20, "enabled": False},  # 大
-    {"pos": (400, 300), "r": 14, "enabled": False},  # 中
-    {"pos": (400, 450), "r": 14, "enabled": True},   # 中 
+    {"pos": (400, 150), "r": 25, "enabled": False},  # 大
+    {"pos": (400, 300), "r": 20, "enabled": False},  # 中
+    {"pos": (400, 450), "r": 20, "enabled": True},   # 中 
 ]
 
 def is_hover(e, mouse_pos):
@@ -37,18 +37,18 @@ while in_map:
                     break
 
     #背景
-    screen.fill((128, 128, 128))
+    screen.fill((0, 0, 0))
 
     #線
     pygame.draw.lines(
-        screen, (0, 0, 0), False,
+        screen, (255, 255, 255), False,
         [e["pos"] for e in enemies],
         3
     )
 
     #敵マーク描画
     for e in enemies:
-        if is_hover(e, mouse_pos):
+        if e["enabled"] and is_hover(e, mouse_pos):
             # ホバー中の色
             color = (255, 120, 120)
         else:
