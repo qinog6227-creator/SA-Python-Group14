@@ -26,6 +26,7 @@ while True:
     # ・負け（lose） → どのステージでも gameover
     # ・勝ち（win）かつ stage == 3 → gameclear
     # ・勝ち（win）かつ stage が 1 or 2 → next_stage
+    #関数result(win or lose), stage(1~3)を設定すると動くようになります
 
     if result == "lose":
         screen.blit(game_over_img, (0, 0))
