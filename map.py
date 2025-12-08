@@ -52,7 +52,7 @@ while in_map:
             # ホバー中の色
             color = (255, 120, 120)
         else:
-            # 通常の色（赤 or グレー）
+            # 通常の色（赤かグレー）
             color = (255, 50, 50) if e["enabled"] else (120, 120, 120)
 
         pygame.draw.circle(screen, color, e["pos"], e["r"])
