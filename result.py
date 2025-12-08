@@ -1,17 +1,37 @@
-import battle_parameter
+import pygame
+import sys
 
-print('バトル中のメニュー画面')
-print('1. 攻撃')
-print('2. 防御')   
-print('3. アイテム')
-print('4. 逃げる')
-choice = input('選択してください (1-4): ')
-if choice == '1':
-    print('攻撃を選択しました。')           
-elif choice == '2':
-    print('防御を選択しました。')
-elif choice == '3':
-    print('アイテムを選択しました。')
-elif choice == '4':
-    print('逃げるを選択しました。')
-    print('しかし逃げられなかった!' )
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("Result Screen")
+
+# 画像読み込み
+game_over_img = pygame.image.load("pictures/result/gameover.png")
+game_clear_img = pygame.image.load("pictures/result/gameclear.png")
+
+# 画面サイズに合わせて調整したい場合は以下を使用
+game_over_img = pygame.transform.scale(game_over_img, (800, 600))
+game_clear_img = pygame.transform.scale(game_clear_img, (800, 600))
+
+# ----------- 勝敗をセット -----------
+# "win" または "lose"
+result = "win"     # ←勝利
+# result = "lose"  # ←敗北
+# ------------------------------------
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    # 背景を黒で塗る
+    screen.fill((0, 0, 0))
+
+    # 結果によって表示画像を切り替え
+    if result == "win":
+        screen.blit(game_clear_img, (0, 0))
+    else:
+        screen.blit(game_over_img, (0, 0))
+
+    pygame.display.update()
