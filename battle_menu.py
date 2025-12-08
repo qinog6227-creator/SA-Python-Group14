@@ -319,7 +319,7 @@ def main():
     skull_anim_active = False
     skull_anim_card = None
     skull_anim_start_ms = 0
-    skull_anim_duration_ms = 900  # 0.9秒表示
+    skull_anim_duration_ms = 2000  # 0.9秒表示
 
     last_log = ""
 
