@@ -8,16 +8,11 @@ pygame.display.set_caption("Result Screen")
 # 画像読み込み
 game_over_img = pygame.image.load("pictures/result/gameover.png")
 game_clear_img = pygame.image.load("pictures/result/gameclear.png")
+next_stage_img = pygame.image.load("pictures/result/next_stage.png")  # ← 追加
 
-# 画面サイズに合わせて調整したい場合は以下を使用
 game_over_img = pygame.transform.scale(game_over_img, (800, 600))
 game_clear_img = pygame.transform.scale(game_clear_img, (800, 600))
-
-# ----------- 勝敗をセット -----------
-# "win" または "lose"
-result = "win"     # ←勝利
-# result = "lose"  # ←敗北
-# ------------------------------------
+next_stage_img = pygame.transform.scale(next_stage_img, (800, 600))
 
 while True:
     for event in pygame.event.get():
@@ -25,13 +20,21 @@ while True:
             pygame.quit()
             sys.exit()
 
-    # 背景を黒で塗る
     screen.fill((0, 0, 0))
 
-    # 結果によって表示画像を切り替え
-    if result == "win":
-        screen.blit(game_clear_img, (0, 0))
-    else:
+    # ◆ 表示ロジック ◆
+    # ・負け（lose） → どのステージでも gameover
+    # ・勝ち（win）かつ stage == 3 → gameclear
+    # ・勝ち（win）かつ stage が 1 or 2 → next_stage
+    #関数result(win or lose), stage(1~3)を設定すると動くようになります
+
+    if result == "lose":
         screen.blit(game_over_img, (0, 0))
+
+    elif result == "win":
+        if stage == 3:
+            screen.blit(game_clear_img, (0, 0))      # 最終ステージ勝利
+        else:
+            screen.blit(next_stage_img, (0, 0))      # ステージ1、2クリア → 次へ
 
     pygame.display.update()
