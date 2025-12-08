@@ -6,12 +6,12 @@ screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Result Screen")
 
 # 画像読み込み
-game_over_img = pygame.image.load("gameover.png")
-game_clear_img = pygame.image.load("gameclear.png")
+game_over_img = pygame.image.load("pictures/result/gameover.png")
+game_clear_img = pygame.image.load("pictures/result/gameclear.png")
 
 # 画面サイズに合わせて調整したい場合は以下を使用
-# game_over_img = pygame.transform.scale(game_over_img, (800, 600))
-# game_clear_img = pygame.transform.scale(game_clear_img, (800, 600))
+game_over_img = pygame.transform.scale(game_over_img, (800, 600))
+game_clear_img = pygame.transform.scale(game_clear_img, (800, 600))
 
 # ----------- 勝敗をセット -----------
 # "win" または "lose"
