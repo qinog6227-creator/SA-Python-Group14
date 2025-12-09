@@ -2,7 +2,7 @@
 
 import Ltitle
 import Lmap
-import Lbattle_main
+import LBbattle_main
 import Lresult
 
 #------変数一覧---------
@@ -25,7 +25,7 @@ while is_move != 'y':
         break
 
 encount += 1
-is_win = Lbattle_main.run_battle(encount) #LBattle_mainを呼び出す
+is_win = LBbattle_main.run_battle(encount) #LBattle_mainを呼び出す
 if is_win == 'win':
     Lresult.draw_wining()
 elif is_win == 'lose':
@@ -39,7 +39,7 @@ while is_move != 'y':
         break
 
 encount += 1
-is_win = Lbattle_main.run_battle(encount) #LBattle_mainを呼び出す
+is_win = LBbattle_main.run_battle(encount) #LBattle_mainを呼び出す
 if is_win == 'win':
     Lresult.draw_wining()
 elif is_win == 'lose':
@@ -54,7 +54,7 @@ while is_move != 'y':
         break
 
 encount += 1
-is_win = Lbattle_main.run_battle(encount) #LBattle_mainを呼び出す
+is_win = LBbattle_main.run_battle(encount) #LBattle_mainを呼び出す
 if is_win == 'win':
     Lresult.draw_wining()
 elif is_win == 'lose':
