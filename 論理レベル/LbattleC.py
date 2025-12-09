@@ -5,14 +5,14 @@ import Lparameter
 # ★引数と戻り値に stockD を追加！★
 def calc_draw(deck, p_hp, stockA, stockD):
     logs = []
-    force_end = False
+    force_end = False #強制終了の判定
 
-    if len(deck) == 0:
-        deck = Lparameter.DECK_LIST.copy()
+    if len(deck) == 0: #len関数は配列の要素数を計測
+        deck = Lparameter.DECK_LIST.copy() #マクロからコピー
         logs.append(">> 山札を補充しました！")
 
-    card = random.choice(deck)
-    deck.remove(card)
+    card = random.choice(deck) #ランダムに引く
+    deck.remove(card) #
 
     # --- 効果判定 ---
     if card == 1:
@@ -41,7 +41,7 @@ def calc_draw(deck, p_hp, stockA, stockD):
 # ==========================================
 def calc_player_attack(e_hp, stockA):
     logs = []
-    damage = int(stockA * 1.5) 
+    damage = int(stockA * 1.0) 
     e_hp -= damage
     logs.append(">> 攻撃実行！")
     logs.append(f">> 敵に {damage} のダメージを与えた！")
