@@ -1,15 +1,15 @@
 import sys
-import MbattleG #グラフィック
-import MbattleC #計算
-import 物理レベルMarge.Mparameter as Mparameter #マクロ
+import LbattleG #グラフィック
+import LbattleC #計算
+import Lparameter #マクロ
 
 # ★全体を関数にする！
 def run_battle(encount):
     
     #マクロからの初期化
-    enemy_hp = Mparameter.ENEMY_MAX_HP
-    player_hp = Mparameter.PLAYER_MAX_HP
-    deck = Mparameter.DECK_LIST.copy()
+    enemy_hp = Lparameter.ENEMY_MAX_HP
+    player_hp = Lparameter.PLAYER_MAX_HP
+    deck = Lparameter.DECK_LIST.copy()
     
     # バトル中に変わるパラメータ
     stock_attack = 0 
@@ -19,15 +19,15 @@ def run_battle(encount):
     # === バトルループ ===
     while True:
         # --- 2. 表示 (View) ---
-        MbattleG.encount_bar(encount)
-        MbattleG.draw_battleStatus(enemy_hp, player_hp, stock_attack, stock_defence)
+        LbattleG.encount_bar(encount)
+        LbattleG.draw_battleStatus(enemy_hp, player_hp, stock_attack, stock_defence)
         # ★ここでログを表示する！
-        MbattleG.draw_logs(current_logs)
-        MbattleG.draw_battleCommand()
+        LbattleG.draw_logs(current_logs)
+        LbattleG.draw_battleCommand()
 
         # --- 3. 入力 (Input) ---
         # LbattleGのメッセージを使って入力を待つ
-        command = input(MbattleG.draw_wait())
+        command = input(LbattleG.draw_wait())
         print("") 
 
 
@@ -36,7 +36,7 @@ def run_battle(encount):
         if command == 'd':
             # ★ 計算結果を「全て」受け取る！
             deck, player_hp, stock_attack, stock_defence, force_end, new_logs = \
-                MbattleC.calc_draw(deck, player_hp, stock_attack, stock_defence)
+                LbattleC.calc_draw(deck, player_hp, stock_attack, stock_defence)
             
             # ★ ログを更新（これで次のループで表示される）
             current_logs = new_logs
@@ -48,7 +48,7 @@ def run_battle(encount):
         # B. 攻撃処理
         elif command == 'c':
             enemy_hp, new_logs = \
-                MbattleC.calc_player_attack(enemy_hp, stock_attack)
+                LbattleC.calc_player_attack(enemy_hp, stock_attack)
             
             current_logs = new_logs
             stock_attack = 0 # 攻撃したのでリセット
@@ -59,7 +59,7 @@ def run_battle(encount):
             if enemy_hp > 0:
                 # ステージ数は仮で「1」
                 player_hp, enemy_logs = \
-                    MbattleC.calc_enemy_turn(player_hp, stock_defence, 1)
+                    LbattleC.calc_enemy_turn(player_hp, stock_defence, 1)
                 
                 # ログを追記する
                 current_logs.extend(enemy_logs)
@@ -71,7 +71,7 @@ def run_battle(encount):
             current_logs.append("\n>> 勝利！おめでとう！") 
             
             # 2. 最後にログを描画して、メッセージを表示させる
-            MbattleG.draw_logs(current_logs)
+            LbattleG.draw_logs(current_logs)
             
             return "win"
         
@@ -80,7 +80,7 @@ def run_battle(encount):
             current_logs.append("\n>> 敗北... ゲームオーバー。")
             
             # 2. 最後にログを描画して、メッセージを表示させる
-            MbattleG.draw_logs(current_logs)
+            LbattleG.draw_logs(current_logs)
             
             return "lose"
     
