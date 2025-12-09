@@ -4,7 +4,7 @@ import pygame
 # ※ ファイル名はチームメンバーからもらったものに合わせてね！
 try:
     IMG_BG = pygame.image.load("background.png") 
-    # IMG_ENEMY = pygame.image.load("enemy.png") # 敵画像があればコメント外す
+    IMG_ENEMY = pygame.image.load("enemy.png") # 敵画像があればコメント外す
 except:
     # 画像がない場合のエラー回避（とりあえず黒塗りなどを代用）
     IMG_BG = None
