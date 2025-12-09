@@ -21,6 +21,6 @@ def draw_wait():
 
 # ★ここ重要！ログのリストを受け取って表示する関数
 def draw_logs(logs):
-    print("[ログ]")
+    print("[メッセージ]")
     for msg in logs:
         print(msg)

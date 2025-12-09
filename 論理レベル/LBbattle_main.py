@@ -6,10 +6,10 @@ import Lparameter #マクロ
 # ★全体を関数にする！
 def run_battle():
     
-    # --- 1. 初期化 ---
+    #マクロからの初期化
     enemy_hp = Lparameter.ENEMY_MAX_HP
     player_hp = Lparameter.PLAYER_MAX_HP
-    deck = Lparameter.DECK_LIST.copy() #配列はコピー
+    deck = Lparameter.DECK_LIST.copy()
     
     # バトル中に変わるパラメータ
     stock_attack = 0 
@@ -21,7 +21,6 @@ def run_battle():
     while True:
         # --- 2. 表示 (View) ---
         LbattleG.encount_bar(encount)
-        # stock_defence も渡す
         LbattleG.draw_battleStatus(enemy_hp, player_hp, stock_attack, stock_defence)
         # ★ここでログを表示する！
         LbattleG.draw_logs(current_logs)
@@ -32,8 +31,8 @@ def run_battle():
         command = input(LbattleG.draw_wait())
         print("") 
 
+
         # --- 4. 計算 (Logic) ---
-        
         # A. ドロー処理
         if command == 'd':
             # ★ 計算結果を「全て」受け取る！
@@ -86,7 +85,7 @@ def run_battle():
             
             return "lose"
         
-        
+
 # このファイルを直接実行した時だけ動くテスト用コード
 if __name__ == "__main__":
     run_battle()
