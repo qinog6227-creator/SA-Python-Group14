@@ -1,5 +1,5 @@
 import random
-import Lparameter 
+import 物理レベル_Merge.Pparameter as Pparameter 
 
 # --- 1. ドロー処理 ---
 # ★引数と戻り値に stockD を追加！★
@@ -8,7 +8,7 @@ def calc_draw(deck, p_hp, stockA, stockD):
     force_end = False #強制終了の判定
 
     if len(deck) == 0: #len関数は配列の要素数を計測
-        deck = Lparameter.DECK_LIST.copy() #マクロからコピー
+        deck = Pparameter.DECK_LIST.copy() #マクロからコピー
         logs.append(">> 山札を補充しました！")
 
     card = random.choice(deck) #ランダムに引く
@@ -16,13 +16,13 @@ def calc_draw(deck, p_hp, stockA, stockD):
 
     # --- 効果判定 ---
     if card == 1:
-        stockA += Lparameter.SWORD_POWER
+        stockA += Pparameter.SWORD_POWER
         logs.append(">> 【剣】を引いた！ 攻撃力をチャージ！")
         
     elif card == 2:
         # ★ガードを「加算」して溜めるロジックに変更
-        stockD += Lparameter.GUARD_POWER
-        logs.append(f">> 【ガード】を引いた！ 防御力が {Lparameter.GUARD_POWER} 増強！")
+        stockD += Pparameter.GUARD_POWER
+        logs.append(f">> 【ガード】を引いた！ 防御力が {Pparameter.GUARD_POWER} 増強！")
         
     elif card == 3:
         # ドクロは全てを失う
@@ -57,7 +57,7 @@ def calc_enemy_turn(p_hp, stockD, current_stage):
     logs = []
     
     # 敵の基本攻撃力を取得
-    base_power = Lparameter.ENEMY_POWER_LIST[current_stage - 1]
+    base_power = Pparameter.ENEMY_POWER_LIST[current_stage - 1]
     
     # ★ガードによるダメージ軽減計算
     actual_damage = base_power - stockD

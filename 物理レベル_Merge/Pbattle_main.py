@@ -1,16 +1,16 @@
 import pygame #パイゲーム実行
 import sys
-import LbattleG #グラフィック
-import LbattleC #計算
-import Lparameter #マクロ
+import 物理レベル_Merge.PbattleG as PbattleG #グラフィック
+import 物理レベル_Merge.PbattleC as PbattleC #計算
+import 物理レベル_Merge.Pparameter as Pparameter #マクロ
 
 # ★全体を関数にする！
 def run_battle(screen, encount):
     
     #マクロからの初期化
-    enemy_hp = Lparameter.ENEMY_MAX_HP
-    player_hp = Lparameter.PLAYER_MAX_HP
-    deck = Lparameter.DECK_LIST.copy()
+    enemy_hp = Pparameter.ENEMY_MAX_HP
+    player_hp = Pparameter.PLAYER_MAX_HP
+    deck = Pparameter.DECK_LIST.copy()
         
     # バトル中に変わるパラメータ
     stock_attack = 0 
@@ -27,8 +27,8 @@ def run_battle(screen, encount):
         screen.fill((0, 0, 0))
 
         # 2. グラフィック担当に描いてもらう (screenを渡す)
-        LbattleG.draw_battleStatus(screen, enemy_hp, ...)
-        LbattleG.draw_logs(screen, current_logs)
+        PbattleG.draw_battleStatus(screen, enemy_hp, ...)
+        PbattleG.draw_logs(screen, current_logs)
         
         # (仮) ボタンの場所がわかるように四角を描く
         pygame.draw.rect(screen, (0, 255, 0), BTN_DRAW)
@@ -50,7 +50,7 @@ def run_battle(screen, encount):
                     # ★計算ロジック(LbattleC)はそのまま使える！！！
                     # ★ 計算結果を「全て」受け取る！
                     deck, player_hp, stock_attack, stock_defence, force_end, new_logs = \
-                    LbattleC.calc_draw(deck, player_hp, stock_attack, stock_defence)
+                    PbattleC.calc_draw(deck, player_hp, stock_attack, stock_defence)
             
                     # ★ ログを更新（これで次のループで表示される）
                     current_logs = new_logs
@@ -62,7 +62,7 @@ def run_battle(screen, encount):
                 # 攻撃ボタンの上なら？ (input('c') の代わり)
                 elif BTN_ATTACK.collidepoint(event.pos):
                     # ★ここもそのまま！
-                    enemy_hp, ... = LbattleC.calc_player_attack(...)
+                    enemy_hp, ... = PbattleC.calc_player_attack(...)
                     # ...
 
 
@@ -80,7 +80,7 @@ def run_battle(screen, encount):
         # B. 攻撃処理
         elif command == 'c':
             enemy_hp, new_logs = \
-                LbattleC.calc_player_attack(enemy_hp, stock_attack)
+                PbattleC.calc_player_attack(enemy_hp, stock_attack)
             
             current_logs = new_logs
             stock_attack = 0 # 攻撃したのでリセット
@@ -91,7 +91,7 @@ def run_battle(screen, encount):
             if enemy_hp > 0:
                 # ステージ数は仮で「1」
                 player_hp, enemy_logs = \
-                    LbattleC.calc_enemy_turn(player_hp, stock_defence, 1)
+                    PbattleC.calc_enemy_turn(player_hp, stock_defence, 1)
                 
                 # ログを追記する
                 current_logs.extend(enemy_logs)
@@ -103,7 +103,7 @@ def run_battle(screen, encount):
             current_logs.append("\n>> 勝利！おめでとう！") 
             
             # 2. 最後にログを描画して、メッセージを表示させる
-            LbattleG.draw_logs(current_logs)
+            PbattleG.draw_logs(current_logs)
             
             return "win"
         
@@ -112,7 +112,7 @@ def run_battle(screen, encount):
             current_logs.append("\n>> 敗北... ゲームオーバー。")
             
             # 2. 最後にログを描画して、メッセージを表示させる
-            LbattleG.draw_logs(current_logs)
+            PbattleG.draw_logs(current_logs)
             
             return "lose"
     
