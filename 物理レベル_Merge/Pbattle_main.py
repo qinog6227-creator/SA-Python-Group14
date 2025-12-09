@@ -1,8 +1,8 @@
 import pygame #パイゲーム実行
 import sys
-import 物理レベル_Merge.PbattleG as PbattleG #グラフィック
-import 物理レベル_Merge.PbattleC as PbattleC #計算
-import 物理レベル_Merge.Pparameter as Pparameter #マクロ
+import PbattleG #グラフィック
+import PbattleC #計算
+import Pparameter #マクロ
 
 # ★全体を関数にする！
 def run_battle(screen, encount):

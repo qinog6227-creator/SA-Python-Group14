@@ -1,5 +1,5 @@
 import random
-import 物理レベル_Merge.Pparameter as Pparameter 
+import Pparameter 
 
 # --- 1. ドロー処理 ---
 # ★引数と戻り値に stockD を追加！★

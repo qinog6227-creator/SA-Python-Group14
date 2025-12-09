@@ -1,10 +1,10 @@
 #メイン関数。すべて呼び出す
 
 import pygame #パイゲーム実行
-import 物理レベル_Merge.Ptitle as Ptitle
-import 物理レベル_Merge.Pmap as Pmap
-import 物理レベル_Merge.Pbattle_main as Pbattle_main
-import 物理レベル_Merge.Presult as Presult
+import Ptitle
+import Pmap
+import Pbattle_main
+import Presult
 
 #------変数一覧---------
 game_state = 0
