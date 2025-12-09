@@ -4,7 +4,7 @@ import LbattleC #計算
 import Lparameter #マクロ
 
 # ★全体を関数にする！
-def run_battle():
+def run_battle(encount):
     
     #マクロからの初期化
     enemy_hp = Lparameter.ENEMY_MAX_HP
@@ -14,7 +14,6 @@ def run_battle():
     # バトル中に変わるパラメータ
     stock_attack = 0 
     stock_defence = 0 
-    encount = 1
     current_logs = ["----- バトル開始 -----"] # ★ログを入れる箱
 
     # === バトルループ ===
@@ -84,7 +83,7 @@ def run_battle():
             LbattleG.draw_logs(current_logs)
             
             return "lose"
-        
+    
 
 # このファイルを直接実行した時だけ動くテスト用コード
 if __name__ == "__main__":

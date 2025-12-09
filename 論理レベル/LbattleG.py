@@ -2,6 +2,11 @@
 
 def encount_bar(encount):
     print(f"--------------------{encount}戦目--------------")
+    if encount == 1 or 2:
+        print("--------------------vs敵-------------------")
+    if encount == 3:
+        print("--------------------vs魔王---------------------")
+
 
 def draw_battleStatus(e_hp, p_hp, stockA, stockD): 
     print("---------最新情報-----------------")
