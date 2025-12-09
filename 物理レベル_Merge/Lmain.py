@@ -1,5 +1,6 @@
 #メイン関数。すべて呼び出す
 
+import pygame #パイゲーム実行
 import Ltitle
 import Lmap
 import Lbattle_main
@@ -12,50 +13,65 @@ is_move = 'none'
 is_win = 'none'
 encount = 0 #バトル数を計測
 
-Ltitle.draw_title()
-while is_start != 's':
-    is_start = input(Ltitle.draw_wait_start())
-    if is_start == 's':
-        break
+def main():
+    Ltitle.draw_title()
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600)) # 幅800, 高さ600
+    pygame.display.set_caption("14班 RPG")
 
-Lmap.draw_map1()
-while is_move != 'y':
-    is_move = input(Lmap.draw_wait_fowrd())
-    if is_move == 'y':
-        break
 
-encount += 1
-is_win = Lbattle_main.run_battle(encount) #LBattle_mainを呼び出す
-if is_win == 'win':
-    Lresult.draw_wining()
-elif is_win == 'lose':
-    Lresult.draw_losing()
-is_move = 'none' #★　次のステージへ進むか判定を初期化
-is_win = 'none'
-Lmap.draw_map2()
-while is_move != 'y':
-    is_move = input(Lmap.draw_wait_fowrd())
-    if is_move == 'y':
-        break
+    while is_start != 's':
+        is_start = input(Ltitle.draw_wait_start())
+        if is_start == 's':
+            break
 
-encount += 1
-is_win = Lbattle_main.run_battle(encount) #LBattle_mainを呼び出す
-if is_win == 'win':
-    Lresult.draw_wining()
-elif is_win == 'lose':
-    Lresult.draw_losing()
+    Lmap.draw_map1()
+    while is_move != 'y':
+        is_move = input(Lmap.draw_wait_fowrd())
+        if is_move == 'y':
+            break
 
-is_move = 'none' #★　次のステージへ進むか判定を初期化
-is_win = 'none'
-Lmap.draw_map3()
-while is_move != 'y':
-    is_move = input(Lmap.draw_wait_fowrd())
-    if is_move == 'y':
-        break
+    encount += 1
+    # 2. バトルを呼び出す時、画用紙(screen)を渡す！
+    # 今まで: run_battle(encount)
+    # これから: run_battle(screen, encount)
+    is_win = Lbattle_main.run_battle(screen, encount)
+    if is_win == 'win':
+        Lresult.draw_wining()
+    elif is_win == 'lose':
+        Lresult.draw_losing()
+    is_move = 'none' #★　次のステージへ進むか判定を初期化
+    is_win = 'none'
+    Lmap.draw_map2()
+    while is_move != 'y':
+        is_move = input(Lmap.draw_wait_fowrd())
+        if is_move == 'y':
+            break
 
-encount += 1
-is_win = Lbattle_main.run_battle(encount) #LBattle_mainを呼び出す
-if is_win == 'win':
-    Lresult.draw_wining()
-elif is_win == 'lose':
-    Lresult.draw_losing()
+    encount += 1
+    # 2. バトルを呼び出す時、画用紙(screen)を渡す！
+    # 今まで: run_battle(encount)
+    # これから: run_battle(screen, encount)
+    is_win = Lbattle_main.run_battle(screen, encount)
+    if is_win == 'win':
+        Lresult.draw_wining()
+    elif is_win == 'lose':
+        Lresult.draw_losing()
+
+    is_move = 'none' #★　次のステージへ進むか判定を初期化
+    is_win = 'none'
+    Lmap.draw_map3()
+    while is_move != 'y':
+        is_move = input(Lmap.draw_wait_fowrd())
+        if is_move == 'y':
+            break
+
+    encount += 1
+    # 2. バトルを呼び出す時、画用紙(screen)を渡す！
+    # 今まで: run_battle(encount)
+    # これから: run_battle(screen, encount)
+    is_win = Lbattle_main.run_battle(screen, encount)
+    if is_win == 'win':
+        Lresult.draw_wining()
+    elif is_win == 'lose':
+        Lresult.draw_losing()
