@@ -1,33 +1,25 @@
-# battle_parameter.py
-# ここにゲームの「数字」を全部まとめておく
+# --- プレイヤーの攻撃計算 ---
+def calc_player_attack(current_enemy_hp, stock_attack):
+    logs = [] 
+    # 計算
+    damage = int(stock_attack * 1.0)
+    current_enemy_hp -= damage
 
-# --- 勇者（プレイヤー）の設定 ---
-PLAYER_MAX_HP = 30       # 勇者の最大HP
+    # ログ (f文字列を使うと変数を埋め込めます)
+    logs.append(f"攻撃！ 敵に {damage} のダメージ！")
+    
+    # 新しいHPとログを返す
+    return current_enemy_hp, logs
 
-# --- 敵（魔王）の設定 ---
-ENEMY_MAX_HP = 50        # 敵の最大HP
-ENEMY_ATTACK_MIN = 3     # 敵の攻撃の最小ダメージ
-ENEMY_ATTACK_MAX = 8     # 敵の攻撃の最大ダメージ
+# --- 敵の攻撃計算 ---
+def calc_enemy_attack(current_player_hp, enemy_power):
+    logs = [] 
+    damage = int(enemy_power * 1.5)
+    current_player_hp -= damage
+    
+    logs.append(f"敵の攻撃！ {damage} のダメージを受けた！")
+    
+    # 新しいHPとログを返す
+    return current_player_hp, logs
 
-# --- カードの効果設定 ---
-# 剣（攻撃ストック）
-SWORD_DAMAGE = 2         # 剣1枚あたりのダメージ
 
-# 回復薬
-HEAL_VALUE = 5           # 回復する量
-
-# 姫（攻撃発動）
-# 倍率とか設定したかったらここに書く
-
-# ドクロ（ペナルティ）
-PENALTY_DAMAGE = 5       # ドクロを引いた時に受けるダメージ
-
-# --- デッキ（山札）の中身 ---
-# 1=剣, 2=回復, 3=姫, 4=ドクロ
-# この数字の並びを変えれば、剣だらけにしたり、ドクロだらけにできる
-DECK_LIST = [
-    1, 1, 1, 1, 1,  # 剣 5枚
-    2, 2, 2,        # 回復 3枚
-    3, 3,           # 姫 2枚
-    4, 4            # ドクロ 2枚
-]

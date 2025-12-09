@@ -1,20 +1,22 @@
-def map1_draw():
+#マップのグラフィックを描画
+
+def draw_map1():
     print("")
     print("-----Map--------------")
     print("★：クリア地点    ☆：NEXT")
     print("★-----☆-----？-----？")
-    print("")
+    print("先へ進みますか？")
 
-def map2_draw():
+def draw_map2():
     print("")
     print("-----Map--------------")
     print("★：クリア地点    ☆：NEXT")   
     print("★----★-----☆-----？")
-    print("")
+    print("先へ進みますか？")
 
-def map3_draw():
+def draw_map3():
     print("") 
     print("-----Map--------------")
     print("★：クリア地点    ☆：NEXT")   
     print("★----★-----★-----☆")
-    print("")
+    print("魔王の部屋へ進みますか？")

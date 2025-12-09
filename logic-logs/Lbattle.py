@@ -8,7 +8,6 @@ def show_battleStatus(e_hp, p_hp, stockA):
     print(f"プレイヤー: {p_hp}")
     print(f"溜め攻撃力: {stockA}")
 
-
 #コマンド一覧を表示
 def show_battleCommand():
     print("-----コマンド-----")
