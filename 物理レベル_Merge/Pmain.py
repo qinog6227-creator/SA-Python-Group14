@@ -1,77 +1,36 @@
-#メイン関数。すべて呼び出す
-
-import pygame #パイゲーム実行
+import pygame
+import sys
 import Ptitle
-import Pmap
-import Pbattle_main
-import Presult
+import os # ★重要：ファイル操作用
 
-#------変数一覧---------
-game_state = 0
-is_start = 'none'
-is_move = 'none'
-is_win = 'none'
-encount = 0 #バトル数を計測
-
-def main():
-    Ptitle.draw_title()
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600)) # 幅800, 高さ600
-    pygame.display.set_caption("14班 RPG")
+# --- 1. 魔法の3行（場所ズレ防止）---
+# これを入れると「画像が見つからない」エラーが消えます
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
-    while is_start != 's':
-        is_start = input(Ptitle.draw_wait_start())
-        if is_start == 's':
-            break
+# 1. 準備（画用紙を作る）
+pygame.init()
+screen = pygame.display.set_mode((800, 600)) # 幅800, 高さ600
+pygame.display.set_caption("サダメドロー.exe")
 
-    Pmap.draw_map1()
-    while is_move != 'y':
-        is_move = input(Pmap.draw_wait_fowrd())
-        if is_move == 'y':
-            break
+# 文字を書くための「筆（フォント）」を用意
+font = pygame.font.Font(None, 50) 
+font2 = pygame.font.Font(None, 100)
+#追加可能
 
-    encount += 1
-    # 2. バトルを呼び出す時、画用紙(screen)を渡す！
-    # 今まで: run_battle(encount)
-    # これから: run_battle(screen, encount)
-    is_win = Pbattle_main.run_battle(screen, encount)
-    if is_win == 'win':
-        Presult.draw_wining()
-    elif is_win == 'lose':
-        Presult.draw_losing()
-    is_move = 'none' #★　次のステージへ進むか判定を初期化
-    is_win = 'none'
-    Pmap.draw_map2()
-    while is_move != 'y':
-        is_move = input(Pmap.draw_wait_fowrd())
-        if is_move == 'y':
-            break
 
-    encount += 1
-    # 2. バトルを呼び出す時、画用紙(screen)を渡す！
-    # 今まで: run_battle(encount)
-    # これから: run_battle(screen, encount)
-    is_win = Pbattle_main.run_battle(screen, encount)
-    if is_win == 'win':
-        Presult.draw_wining()
-    elif is_win == 'lose':
-        Presult.draw_losing()
 
-    is_move = 'none' #★　次のステージへ進むか判定を初期化
-    is_win = 'none'
-    Pmap.draw_map3()
-    while is_move != 'y':
-        is_move = input(Pmap.draw_wait_fowrd())
-        if is_move == 'y':
-            break
+# === 2. メインループ（ここが紙芝居） ===
+while True:
+    # (終了ボタンが押されたら終わる処理)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
-    encount += 1
-    # 2. バトルを呼び出す時、画用紙(screen)を渡す！
-    # 今まで: run_battle(encount)
-    # これから: run_battle(screen, encount)
-    is_win = Pbattle_main.run_battle(screen, encount)
-    if is_win == 'win':
-        Presult.draw_wining()
-    elif is_win == 'lose':
-        Presult.draw_losing()
+    # --- お絵かきタイム ---
+
+    Ptitle.draw_title(screen)
+
+    # --- 3. 提出（これをしないと画面に出ない！） ---
+    pygame.display.flip()
