@@ -1,73 +1,86 @@
 import pygame
+import os
 
-# --- 1. 準備 (画像とフォント) ---
-# ※ ファイル名はチームメンバーからもらったものに合わせてね！
-try:
-    IMG_BG = pygame.image.load("background.png") 
-    # IMG_ENEMY = pygame.image.load("enemy.png") # 敵画像があればコメント外す
-except:
-    # 画像がない場合のエラー回避（とりあえず黒塗りなどを代用）
-    IMG_BG = None
-    print("画像読み込みエラー: ファイル名を確認してください")
+# --- 1. 準備：定数とフォント ---
 
-# フォントの準備 (Noneはデフォルトフォント)
-pygame.font.init() 
-FONT = pygame.font.Font(None, 40) 
+pygame.font.init()
+FONT = pygame.font.Font(None, 30) # 小さめ
+FONT_BIG = pygame.font.Font(None, 40) # 大きめ
+
+# 色の定義
+BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-RED = (255, 100, 100)
-YELLOW = (255, 255, 0)
+RED = (200, 50, 50)
+BLUE = (50, 50, 200)
+GREEN = (0, 255, 0)
+GRAY = (150, 150, 150)
 
+
+
+#2. 描画関数
 
 def encount_bar(screen, encount):
-    text_content = f"--- BATTLE {encount} ---"
+    # バトル回数の表示 (画面上部)
+    if encount == 1 or encount == 2:
+        text_bar1 = FONT.render(f"Normal Enemy,{encount}戦目", True, RED)
+        screen.bult(text_bar1, (50, 200))
+    
     if encount == 3:
-        text_content += " (BOSS: MAOU)"
-    # render(文字, 滑らかにするか, 色)
-    text = FONT.render(text_content, True, YELLOW)
-    screen.blit(text, (20, 20)) # 左上に表示
+        text_bar1 = FONT.render(f"Boss,{encount}戦目", True, RED)
+        screen.bult(text_bar1, (50, 200))
+
 
 
 def draw_battleStatus(screen, e_hp, p_hp, stockA, stockD): 
-    # 1. 背景を貼り付ける (リセットも兼ねる)
-    if IMG_BG:
-        screen.blit(IMG_BG, (0, 0)) 
-    else:
-        screen.fill((0, 0, 0)) # 画像がなければ黒で塗りつぶし
+    # 敵キャラの仮置き (四角)
+    pygame.draw.rect(screen, GRAY, (300, 50, 200, 200)) # 敵キャラ枠
 
-    # 2. ステータス文字の描画
-    # ★修正点: 引数の変数を正しく使うように直しました！    
-    # 敵HP
-    text_ehp = FONT.render(f"ENEMY HP: {e_hp}", True, RED)
-    screen.blit(text_ehp, (300, 100)) # 画面中央上部
+    # 1. 敵HP (上部に表示)
+    text_ehp = FONT.render(f"ENEMY HP: {e_hp}", True, WHITE)
+    screen.blit(text_ehp, (300, 260))
 
-    # プレイヤーHP
-    text_php = FONT.render(f"PLAYER HP: {p_hp}", True, WHITE)
-    screen.blit(text_php, (50, 400)) # 左下
+    # 2. プレイヤーHPバーの仮置き (左下)
+    # HPの割合に合わせて幅を変える（最大幅: 200px）
+    hp_width = int((p_hp / 30) * 200) # (30は仮のMAX_HP)
+    pygame.draw.rect(screen, RED, (50, 400, hp_width, 20)) # HPバー本体
+    pygame.draw.rect(screen, WHITE, (50, 400, 200, 20), 2) # HPバー枠
 
+    # 3. プレイヤー情報
+    text_php = FONT.render(f"HP: {p_hp}/30", True, WHITE)
+    screen.blit(text_php, (50, 370))
+    
     # 攻撃ストック
-    text_stA = FONT.render(f"STOCK ATK: {stockA}", True, WHITE)
+    text_stA = FONT.render(f"ATK: {stockA}", True, WHITE)
     screen.blit(text_stA, (50, 450)) 
 
     # 防御ストック
-    text_stD = FONT.render(f"STOCK DEF: {stockD}", True, WHITE)
-    screen.blit(text_stD, (50, 500)) 
+    text_stD = FONT.render(f"DEF: {stockD}", True, WHITE)
+    screen.blit(text_stD, (50, 480)) 
 
 
-def draw_wait():
-    # input用ではなく、画面下に表示するメッセージとして返す
-    return "COMMAND >> CLICK BUTTON"
+def draw_battleCommand(screen, btn_draw_rect, btn_attack_rect):
+    # ドローボタン
+    pygame.draw.rect(screen, BLUE, btn_draw_rect)
+    text_d = FONT_BIG.render("DRAW", True, WHITE)
+    screen.blit(text_d, (btn_draw_rect.x + 20, btn_draw_rect.y + 10))
+
+    # 攻撃ボタン
+    pygame.draw.rect(screen, RED, btn_attack_rect)
+    text_c = FONT_BIG.render("ATTACK", True, WHITE)
+    screen.blit(text_c, (btn_attack_rect.x + 10, btn_attack_rect.y + 10))
 
 
-# ★ログのリストを受け取って表示する関数
 def draw_logs(screen, logs):
-    # ログを表示する開始位置（Y座標）
-    y = 400 
-    
-    # ログが多すぎるとはみ出すので、後ろから5個だけ表示する
-    display_logs = logs[-5:] 
+    # ログウィンドウの仮置き
+    log_area_rect = (550, 50, 220, 500)
+    pygame.draw.rect(screen, (30, 30, 30), log_area_rect) # 黒背景
+    pygame.draw.rect(screen, WHITE, log_area_rect, 2) # 白枠
+
+    # ログ表示 (最新の数件を上から)
+    start_y = 60
+    display_logs = logs[-15:] 
     
     for msg in display_logs:
         text = FONT.render(msg, True, WHITE)
-        # 右側のスペース（x=400以降）に表示
-        screen.blit(text, (400, y))
-        y -= 30 # 上に向かって積み上げる（または += 30 で下へ）
+        screen.blit(text, (560, start_y))
+        start_y += 25
