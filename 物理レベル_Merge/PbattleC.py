@@ -9,7 +9,7 @@ def calc_draw(deck, p_hp, stockA, stockD):
 
     if len(deck) == 0: #len関数は配列の要素数を計測
         deck = Pparameter.DECK_LIST.copy() #マクロからコピー
-        logs.append(">> 山札を補充しました！")
+        logs.append("山札補充")
 
     card = random.choice(deck) #ランダムに引く
     deck.remove(card) #
@@ -17,19 +17,19 @@ def calc_draw(deck, p_hp, stockA, stockD):
     # --- 効果判定 ---
     if card == 1:
         stockA += Pparameter.SWORD_POWER
-        logs.append(">> 【剣】を引いた！ 攻撃力をチャージ！")
+        logs.append("攻撃力チャージ")
         
     elif card == 2:
         # ★ガードを「加算」して溜めるロジックに変更
         stockD += Pparameter.GUARD_POWER
-        logs.append(f">> 【ガード】を引いた！ 防御力が {Pparameter.GUARD_POWER} 増強！")
+        logs.append(f"防御力チャージ")
         
     elif card == 3:
         # ドクロは全てを失う
         stockA = 0
         stockD = 0
         force_end = True
-        logs.append(">> 【ドクロ】... 溜め攻撃・防御を全て没収 & 強制終了！")
+        logs.append("カード没収")
 
     # ★戻り値に stockD を追加！
     return deck, p_hp, stockA, stockD, force_end, logs
@@ -43,8 +43,8 @@ def calc_player_attack(e_hp, stockA):
     logs = []
     damage = int(stockA * 1.0) 
     e_hp -= damage
-    logs.append(">> 攻撃実行！")
-    logs.append(f">> 敵に {damage} のダメージを与えた！")
+    logs.append("攻撃実行")
+    logs.append(f"敵に {damage} のダメージを与えた")
     
     return e_hp, logs
 
@@ -66,12 +66,12 @@ def calc_enemy_turn(p_hp, stockD, current_stage):
         
     p_hp -= actual_damage
     
-    logs.append("\n>> 敵の攻撃！")
+    logs.append("\n敵の攻撃")
     
     if actual_damage > 0:
-        logs.append(f">> {base_power} ダメージ（ガードで {stockD} 軽減）を受けた！")
+        logs.append(f"{base_power} ダメージ（ガードで {stockD} 軽減）を受けた")
     else:
-        logs.append(">> 攻撃は完璧にガードされた！ダメージなし！")
+        logs.append("攻撃は完璧にガードされた！ダメージなし！")
         
     # ガードは使い切りなので、メイン関数側でリセット処理が必要です。
     # (ここでは計算のみ行う)
