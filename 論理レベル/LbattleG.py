@@ -2,7 +2,7 @@
 
 def encount_bar(encount):
     print(f"--------------------{encount}戦目--------------")
-    if encount == 1 or 2:
+    if encount == 1 or encount == 2:
         print("--------------------vs敵-------------------")
     if encount == 3:
         print("--------------------vs魔王---------------------")

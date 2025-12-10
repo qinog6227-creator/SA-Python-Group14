@@ -1,18 +1,18 @@
 #マップのグラフィックを描画
 
-def draw_map1():
+def draw_map1(): #ステージ1
     print("")
     print("-----Map--------------")
     print("★：クリア地点    ☆：NEXT")
     print("★-----☆-----？-----？")
 
-def draw_map2():
+def draw_map2(): #ステージ2
     print("")
     print("-----Map--------------")
     print("★：クリア地点    ☆：NEXT")   
     print("★----★-----☆-----？")
 
-def draw_map3():
+def draw_map3(): #ステージ3
     print("") 
     print("-----Map--------------")
     print("★：クリア地点    ☆：NEXT")   

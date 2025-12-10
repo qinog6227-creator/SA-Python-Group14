@@ -1,7 +1,5 @@
 import pygame
-
-# --- 1. 準備 (画像とフォント) ---
-# ※ ファイル名はチームメンバーからもらったものに合わせてね！
+import os  # ★追加 1
 try:
     IMG_BG = pygame.image.load("background.png") 
     IMG_ENEMY = pygame.image.load("enemy.png") # 敵画像があればコメント外す
