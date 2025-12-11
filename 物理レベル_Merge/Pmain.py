@@ -26,9 +26,13 @@ def main(screen):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        screen.fill((0,0,0))
 
-        PbattleG.draw_battleCommand(screen)
-        Ptitle.draw_title(screen)
+       
+
+
+
+
 
         pygame.display.flip()
 

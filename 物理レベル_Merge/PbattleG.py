@@ -16,15 +16,14 @@ WHITE = (255, 255, 255)
 
 # --- 2. 描画関数 ---
 
-def encount_bar(screen,encount):
-    screen.fill(BLACK)
+#上のメニュー
+def draw_encountBar(screen,encount):
     text_title = FONT.render(f"{encount}st Round", True, WHITE)
     screen.blit(text_title,(400,400))
 
 
 def draw_battleStatus(screen, e_hp, p_hp, stockA, stockD): 
-    screen.fill(BLACK)
-    text_bar = FONT.render(f"----- Latest Imformation -----")
+    text_bar = FONT.render(f"----- Latest Imformation -----", True, WHITE)
     text_enemysta = FONT.render(f"Enemy HP: {e_hp}", True, WHITE)
     text_playersta = FONT.render(f"Player HP: {p_hp}", True, WHITE)
     text_stockA = FONT.render(f"Stock Attack Card: {stockA}", True, WHITE)
@@ -38,13 +37,12 @@ def draw_battleStatus(screen, e_hp, p_hp, stockA, stockD):
 
 
 def draw_battleCommand(screen):
-    screen.fill(BLACK)
-    text_bar = FONT.render(f"-----Command-----")
+    text_bar = FONT.render(f"-----Command-----",True, WHITE)
     text_drawing = FONT.render("draw Keeping!", True, WHITE)
     text_carryOut = FONT.render("carry out owned card!", True, WHITE)
-    screen.blit(text_bar, (200, 150))
-    screen.blit(text_drawing, (200, 190))
-    screen.blit(text_carryOut, (200, 230))
+    screen.blit(text_bar, (400, 150))
+    screen.blit(text_drawing, (400, 190))
+    screen.blit(text_carryOut, (400, 230))
 
 
 def draw_wait():

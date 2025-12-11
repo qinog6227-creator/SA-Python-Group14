@@ -16,19 +16,16 @@ WHITE = (255, 255, 255)
 
 
 def draw_map1(screen):
-    screen.fill(BLACK)
     text_map1 = FONT.render("stage_map1", True, WHITE)
     screen.blit(text_map1,(400,400))
 
 
 def draw_map2(screen):
-    screen.fill(BLACK)
     text_map1 = FONT.render("stage_map2", True, WHITE)
     screen.blit(text_map1,(400,400))
 
 
 def draw_map3(screen):
-    screen.fill(BLACK)
     text_map1 = FONT.render("stage_map3", True, WHITE)
     screen.blit(text_map1,(400,400))
 

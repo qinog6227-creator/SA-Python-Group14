@@ -12,7 +12,6 @@ BLACK = (0,0,0)
 WHITE = (255,255,255)
 
 def draw_title(screen):
-    screen.fill(BLACK)
     text_title = FONT.render("Titile", True, WHITE)
     screen.blit(text_title,(400,400))
 
