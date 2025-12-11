@@ -1,0 +1,12 @@
+・グラフィック(やってくれたところ)
+１　タイトル、　Ltitle
+２　マップ、　 Lmap
+３　バトル、 LbattleG
+４　結果   Lresult
+
+・バトル計算（パラメータのマクロをdefineする）LbattleC
+
+・バトルメイン関数 Lbattle-main
+
+・メイン関数　バトルメイン関数を呼び出す Lmainでやってる
+
