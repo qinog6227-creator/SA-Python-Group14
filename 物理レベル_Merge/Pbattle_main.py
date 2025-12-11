@@ -1,100 +1,102 @@
-# Pbattle_main.py
-import Pparameter
+import pygame
+import PbattleG
 import PbattleC
-import random
+import Pparameter
 
-# ---------------------------------------------
-# バトル初期化
-# ---------------------------------------------
-def battle_init():
-    Pparameter.CURRENT_DECK = Pparameter.DECK_LIST.copy()
-    random.shuffle(Pparameter.CURRENT_DECK)
+# バトル状態を保持する辞書
+battle_state = {
+    "deck": [],
+    "player_hp": 0,
+    "enemy_hp": 0,
+    "stock_attack": 0,
+    "stock_defence": 0,
+    "logs": [],
+    "phase": "draw"
+}
 
-    Pparameter.PLAYER_HAND.clear()
-    Pparameter.PLAYER_CURRENT_HP = Pparameter.PLAYER_MAX_HP
-    Pparameter.ENEMY_CURRENT_HP = Pparameter.ENEMY_MAX_HP
-    Pparameter.PLAYER_ATTACK_POWER = 0
-    Pparameter.PLAYER_DEFENSE_POWER = 0
+# 初期化処理
+def battle_init(encount):
+    battle_state["deck"] = Pparameter.DECK_LIST.copy()
+    battle_state["player_hp"] = Pparameter.PLAYER_MAX_HP
+    battle_state["enemy_hp"] = Pparameter.ENEMY_MAX_HP
+    battle_state["stock_attack"] = 0
+    battle_state["stock_defence"] = 0
+    battle_state["logs"] = [f"----- {encount} 戦目 バトル開始 -----"]
+    battle_state["phase"] = "draw"
 
-    # 初期手札を4枚配る
-    for _ in range(4):
-        draw_card_from_deck()
 
-    return Pparameter.PHASE_PLAYER_DRAW
+# 毎フレーム呼び出すメイン処理
+def run_battle(screen, encount, key_pressed=None):
 
-# ---------------------------------------------
-# 山札からカードを1枚ドロー
-# ---------------------------------------------
-def draw_card_from_deck():
-    Pparameter.CURRENT_DECK, _, _, _, _, logs = PbattleC.calc_draw(
-        Pparameter.CURRENT_DECK,
-        Pparameter.PLAYER_CURRENT_HP,
-        Pparameter.PLAYER_ATTACK_POWER,
-        Pparameter.PLAYER_DEFENSE_POWER
+    # --- 1. 描画 ---
+    screen.fill((0, 0, 0))
+    PbattleG.draw_encountBar(screen, encount)
+    PbattleG.draw_battleStatus(
+        screen,
+        battle_state["enemy_hp"],
+        battle_state["player_hp"],
+        battle_state["stock_attack"],
+        battle_state["stock_defence"]
     )
-    return logs
+    PbattleG.draw_logs(screen, battle_state["logs"][-15:])
+    PbattleG.draw_battleCommand(screen)
 
-# ---------------------------------------------
-# プレイヤードロー処理
-# ---------------------------------------------
-def player_draw_phase():
-    logs = draw_card_from_deck()
-    # 手札が5枚以上ならコマンドフェーズに移行
-    if len(Pparameter.PLAYER_HAND) >= 5:
-        return Pparameter.PHASE_PLAYER_COMMAND, logs
-    return Pparameter.PHASE_PLAYER_DRAW, logs
+    # --- 2. 入力（D or C）---
+    command = None
+    if key_pressed == pygame.K_d:
+        command = "d"
+    elif key_pressed == pygame.K_c:
+        command = "c"
 
-# ---------------------------------------------
-# プレイヤーのコマンド処理
-# card_index: 手札の何番目を使うか
-# ---------------------------------------------
-def player_command_phase(card_index):
-    logs = []
-    if 0 <= card_index < len(Pparameter.PLAYER_HAND):
-        card = Pparameter.PLAYER_HAND.pop(card_index)
-        if card == Pparameter.CARD_ATTACK:
-            Pparameter.PLAYER_ATTACK_POWER += Pparameter.SWORD_POWER
-            # 攻撃は即反映
-            Pparameter.ENEMY_CURRENT_HP, attack_logs = PbattleC.calc_player_attack(
-                Pparameter.ENEMY_CURRENT_HP,
-                Pparameter.PLAYER_ATTACK_POWER
+    # --- 3. フェーズ処理 ---
+    # ① draw フェーズ：Dでドロー
+    if battle_state["phase"] == "draw" and command == "d":
+        deck, player_hp, stockA, stockD, force_end, new_logs = PbattleC.calc_draw(
+            battle_state["deck"],
+            battle_state["player_hp"],
+            battle_state["stock_attack"],
+            battle_state["stock_defence"]
+        )
+        battle_state["deck"] = deck
+        battle_state["player_hp"] = player_hp
+        battle_state["stock_attack"] = stockA
+        battle_state["stock_defence"] = stockD
+        battle_state["logs"] = new_logs
+
+        battle_state["phase"] = "enemy" if force_end else "command"
+
+    # ② command フェーズ：Cで攻撃
+    elif battle_state["phase"] == "command" and command == "c":
+        enemy_hp, new_logs = PbattleC.calc_player_attack(
+            battle_state["enemy_hp"],
+            battle_state["stock_attack"]
+        )
+        battle_state["enemy_hp"] = enemy_hp
+        battle_state["logs"] = new_logs
+        battle_state["stock_attack"] = 0
+
+        battle_state["phase"] = "enemy"
+
+    # ③ enemy フェーズ：敵のターン
+    elif battle_state["phase"] == "enemy":
+        if battle_state["enemy_hp"] > 0:
+            # 敵が攻撃してくる
+            player_hp, enemy_logs = PbattleC.calc_enemy_turn(
+                battle_state["player_hp"],
+                battle_state["stock_defence"],
+                1
             )
-            logs += attack_logs
-            # 攻撃力リセット
-            Pparameter.PLAYER_ATTACK_POWER = 0
-        elif card == Pparameter.CARD_GUARD:
-            Pparameter.PLAYER_DEFENSE_POWER += Pparameter.GUARD_POWER
-            logs.append("防御力チャージ")
-        elif card == Pparameter.CARD_SKULL:
-            Pparameter.PLAYER_ATTACK_POWER = 0
-            Pparameter.PLAYER_DEFENSE_POWER = 0
-            logs.append("カード没収")
+            battle_state["player_hp"] = player_hp
+            battle_state["logs"] += enemy_logs
 
-        return Pparameter.PHASE_ENEMY_TURN, logs
+            # 敵のターン後は次は draw
+            battle_state["stock_defence"] = 0
+            battle_state["phase"] = "draw"
 
-    return Pparameter.PHASE_PLAYER_COMMAND, logs
-
-# ---------------------------------------------
-# 敵ターン処理
-# ---------------------------------------------
-def enemy_phase():
-    p_hp, logs = PbattleC.calc_enemy_turn(
-        Pparameter.PLAYER_CURRENT_HP,
-        Pparameter.PLAYER_DEFENSE_POWER,
-        Pparameter.CURRENT_STAGE
-    )
-    Pparameter.PLAYER_CURRENT_HP = p_hp
-    # ガードは使い切り
-    Pparameter.PLAYER_DEFENSE_POWER = 0
-    return Pparameter.PHASE_CHECK_END, logs
-
-# ---------------------------------------------
-# 勝敗判定フェーズ
-# ---------------------------------------------
-def check_end_phase():
-    if Pparameter.PLAYER_CURRENT_HP <= 0:
+    # --- 4. 勝敗判定 ---
+    if battle_state["player_hp"] <= 0:
         return "lose"
-    elif Pparameter.ENEMY_CURRENT_HP <= 0:
+    if battle_state["enemy_hp"] <= 0:
         return "win"
-    else:
-        return Pparameter.PHASE_PLAYER_DRAW
+
+    return None  # バトル続行中

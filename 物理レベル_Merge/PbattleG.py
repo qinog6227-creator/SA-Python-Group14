@@ -20,18 +20,6 @@ GRAY = (70, 70, 70)
 
 # --- 2. 描画関数 ---
 
-# ★ここに追加：既存の関数を呼び出してまとめるだけの関数
-def draw_battle_screen(screen, p_hp, e_hp, stockA, stockD):
-    # 既存の関数を呼ぶ
-    draw_battleStatus(screen, e_hp, p_hp, stockA, stockD)
-    
-    # コマンドを描画し、ボタンの場所(Rect)を受け取る
-    btn_rect = draw_battleCommand(screen)
-    
-    # Pmainへボタンの場所を返す
-    return btn_rect
-
-
 #何戦目かを表示
 def draw_encountBar(screen, encount):
     text_title = FONT2.render(f"{encount}st Round", True, WHITE)
@@ -51,24 +39,20 @@ def draw_battleStatus(screen, e_hp, p_hp, stockA, stockD):
     screen.blit(text_stockA, (50, 150))
     screen.blit(text_stockD, (50, 190))
 
-#コマンドを表示（★クリック判定のためにRectを返すように変更）
+#コマンドを表示
 def draw_battleCommand(screen):
     text_bar = FONT1.render(f"-----Command-----",True, WHITE)
     
-    # Drawボタン（背景の四角を追加してクリックしやすくする）
+    # Dキー
     draw_btn_rect = pygame.draw.rect(screen, GRAY, (470, 155, 230, 40), border_radius=5)
-    text_drawing = FONT1.render("draw Keeping!", True, WHITE)
+    text_drawing = FONT1.render("D key: draw Keeping!", True, WHITE)
     screen.blit(text_drawing, (480, 160))
     
-    # Executeボタン
-    text_carryOut = FONT1.render("carry out owned card!", True, WHITE)
+    # Cキー
+    text_carryOut = FONT1.render("C key: carry out owned card!", True, WHITE)
     screen.blit(text_carryOut, (480, 200))
     
     screen.blit(text_bar, (480, 120))
-
-    # ★戻り値を追加：Drawボタンの場所を返す
-    return draw_btn_rect
-
 
 #カードを表示する
 def draw_card(screen, card_list):
@@ -94,10 +78,11 @@ def draw_card(screen, card_list):
 def draw_wait():
     return "COMMAND?"
 
+#ログを表示する
 def draw_logs(screen, logs):
-    # ログ表示 (最新の15件を上から)
-    start_y = 500
-    display_logs = logs[-15:] 
+    # ログ表示 (最新の3件を上から)
+    start_y = 680
+    display_logs = logs[-3:] 
     
     for msg in display_logs:
         text = FONT_LOG.render(msg, True, WHITE)
