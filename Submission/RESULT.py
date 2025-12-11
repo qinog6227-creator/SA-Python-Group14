@@ -3,9 +3,9 @@ import PARAMETER
 
 # --- ★追加: 画像のロード ---
 # 画像サイズを画面サイズ(1000x600)に合わせる
-IMG_WIN = pygame.transform.scale(pygame.image.load("assets/GoToNextStage.jpg"), PARAMETER.SCREEN_SIZE)
-IMG_LOSE = pygame.transform.scale(pygame.image.load("assets/GameOver.jpg"), PARAMETER.SCREEN_SIZE)
-IMG_CLEAR = pygame.transform.scale(pygame.image.load("assets/GameClear.jpg"), PARAMETER.SCREEN_SIZE)
+IMG_WIN = pygame.transform.scale(pygame.image.load("assets/GoToNextStage.png"), PARAMETER.SCREEN_SIZE)
+IMG_LOSE = pygame.transform.scale(pygame.image.load("assets/GameOver.png"), PARAMETER.SCREEN_SIZE)
+IMG_CLEAR = pygame.transform.scale(pygame.image.load("assets/GameClear.png"), PARAMETER.SCREEN_SIZE)
 
 def draw_result(screen, is_win, is_clear):
     # 背景として画像を画面いっぱいに表示
