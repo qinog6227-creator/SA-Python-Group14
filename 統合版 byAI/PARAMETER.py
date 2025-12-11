@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 # --- 画面設定 ---
 SCREEN_WIDTH = 1000
@@ -31,34 +32,62 @@ GRAY  = (100, 100, 100)
 PURPLE = (150, 50, 150)
 
 # --- 画像読み込み ---
-# ※pygame.init()が呼ばれる前に読み込むため、try-exceptで安全策を取ります
-try:
-    # リザルト画面用画像
-    IMG_GAME_OVER = pygame.image.load("image_0.png")
-    IMG_NEXT_STAGE = pygame.image.load("image_1.png")
-    IMG_GAME_CLEAR = pygame.image.load("image_2.png")
+base_path = os.path.dirname(os.path.abspath(__file__))
+
+def smart_load(name_candidates):
+    """
+    候補リスト(name_candidates)の中にあるファイルを探して読み込む
+    拡張子(.jpg, .png)や区切り文字(_ありなし)を自動で探します
+    """
+    extensions = ["", ".png", ".jpg", ".jpeg", ".bmp"]
     
-    # 敵アイコン画像 (image_3.png)
-    IMG_ENEMY_RAW = pygame.image.load("image_3.png")
-    # マップ表示用に小さくリサイズ (80x80)
+    for name in name_candidates:
+        for ext in extensions:
+            filename = name + ext
+            path = os.path.join(base_path, filename)
+            if os.path.exists(path):
+                print(f"画像読み込み成功: {filename}")
+                return pygame.image.load(path)
+    
+    # 見つからなかった場合
+    return None
+
+try:
+    # 1. ゲームオーバー画像 (旧 gameover.jpg)
+    # image0, image_0, imageover などを探します
+    IMG_GAME_OVER = smart_load(["image0", "image_0", "gameover", "image_over"])
+
+    # 2. 次のステージ画像 (旧 next_stage.jpg)
+    # image1, image_1, next_stage などを探します
+    IMG_NEXT_STAGE = smart_load(["image1", "image_1", "next_stage", "image_next"])
+
+    # 3. ゲームクリア画像 (旧 gameclear.jpg)
+    # image2, image_2, gameclear などを探します
+    IMG_GAME_CLEAR = smart_load(["image2", "image_2", "gameclear", "image_clear"])
+
+    # 4. 敵画像 (旧 enemy.png)
+    # image3, image_3, enemy などを探します
+    IMG_ENEMY_RAW = smart_load(["image3", "image_3", "enemy", "image_enemy"])
+
+    # 読み込みチェック
+    if None in [IMG_GAME_OVER, IMG_NEXT_STAGE, IMG_GAME_CLEAR, IMG_ENEMY_RAW]:
+        print("\n" + "="*40)
+        print("【画像が見つかりません】")
+        print("ファイル名が以下のいずれかになっているか確認してください：")
+        print("  負け画面: image0.jpg / image0.png / image_0.png")
+        print("  次へ画面: image1.jpg / image1.png / image_1.png")
+        print("  全クリ画面: image2.jpg / image2.png / image_2.png")
+        print("  敵キャラ: image3.png / image3.jpg / image_3.png")
+        print("="*40 + "\n")
+        sys.exit()
+
+    # リサイズ処理
     IMG_ENEMY_MAP = pygame.transform.scale(IMG_ENEMY_RAW, (80, 80))
-    # バトル表示用に大きくリサイズ (200x200)
     IMG_ENEMY_BATTLE = pygame.transform.scale(IMG_ENEMY_RAW, (200, 200))
 
-except FileNotFoundError as e:
-    print("【エラー】画像ファイルが見つかりません。")
-    print("image_0.png から image_3.png をプログラムと同じ場所に置いてください。")
-    sys.exit() # 画像がないと続行できないため終了
-
 except Exception as e:
-    # その他のエラー（pygameが初期化されていない環境など）
-    print(f"【警告】画像の読み込みに失敗しました: {e}")
-    # とりあえずNoneを入れておく（実行時にエラーになる可能性あり）
-    IMG_GAME_OVER = None
-    IMG_NEXT_STAGE = None
-    IMG_GAME_CLEAR = None
-    IMG_ENEMY_MAP = None
-    IMG_ENEMY_BATTLE = None
+    print(f"【予期せぬエラー】{e}")
+    sys.exit()
 
 
 # --- ユーティリティ関数 ---
