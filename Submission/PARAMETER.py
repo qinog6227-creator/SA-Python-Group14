@@ -14,9 +14,9 @@ PLAYER_MAX_HP = 30
 # 敵 (ステージごとの設定: [HP, 攻撃力])
 # 1戦目, 2戦目, 3戦目(ボス)
 ENEMY_STATS = [
-    {"hp": 20, "power": 2},
-    {"hp": 20, "power": 2},
-    {"hp": 50, "power": 4} 
+    {"hp": 15, "power": 2},
+    {"hp": 20, "power": 3},
+    {"hp": 35, "power": 4} 
 ]
 
 # カードID
