@@ -6,7 +6,7 @@ import sys
 pygame.font.init()
 
 # フォントの設定
-FONT = pygame.font.Font(None, 40)
+FONT = pygame.font.Font(None, 60)
 #追加可能
 
 
@@ -16,19 +16,19 @@ WHITE = (255, 255, 255)
 
 
 def draw_map1(screen):
+    pygame.draw.rect(screen, (255,0,0),(200,200,300,300), 0)
     text_map1 = FONT.render("stage_map1", True, WHITE)
-    screen.blit(text_map1,(400,400))
+    screen.blit(text_map1,(250,30))
 
 
 def draw_map2(screen):
     text_map1 = FONT.render("stage_map2", True, WHITE)
-    screen.blit(text_map1,(400,400))
+    screen.blit(text_map1,(250,30))
 
 
 def draw_map3(screen):
     text_map1 = FONT.render("stage_map3", True, WHITE)
-    screen.blit(text_map1,(400,400))
-
+    screen.blit(text_map1,(250,30))
     
 
 def draw_wait_start():

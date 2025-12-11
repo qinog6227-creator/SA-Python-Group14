@@ -18,3 +18,20 @@ DECK_LIST = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
              1, 1, 1, 1, 1, 1, 1,
              2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
              3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3] 
+
+
+#図形をど真ん中に揃える関数
+def centering (name):
+    rect = name.get_rect(center=(400,300))
+    return rect
+
+#画像を横半分に揃える
+def centeringY (name, y):
+    rect = name.get_rect(center=(400,y))
+    return rect
+
+#画像を縦半分に揃える
+def centeringX (name, x):
+    rect = name.get_rect(center=(x,300))
+    return rect
+

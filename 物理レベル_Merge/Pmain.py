@@ -30,6 +30,9 @@ def main(screen):
 
        
 
+        Ptitle.draw_title(screen)
+
+
 
 
 
