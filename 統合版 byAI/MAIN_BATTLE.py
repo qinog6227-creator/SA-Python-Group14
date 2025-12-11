@@ -1,5 +1,5 @@
 import pygame
-import Pparameter
+import PARAMETER
 import PbattleC
 import PbattleG
 
@@ -7,7 +7,7 @@ def battle_loop(screen, stage_num, player_hp):
     clock = pygame.time.Clock()
     
     # 敵パラメータの読み込み
-    enemy_data = Pparameter.ENEMY_STATS[stage_num - 1]
+    enemy_data = PARAMETER.ENEMY_STATS[stage_num - 1]
     e_hp = enemy_data["hp"]
     e_max_hp = e_hp
     e_power = enemy_data["power"]
@@ -57,7 +57,7 @@ def battle_loop(screen, stage_num, player_hp):
                 player_hp -= dmg
                 logs.append(f"Enemy Attack! {dmg} dmg taken.")
             else:
-                c_name = "Sword" if card == Pparameter.CARD_SWORD else "Guard"
+                c_name = "Sword" if card == PARAMETER.CARD_SWORD else "Guard"
                 logs.append(f"Draw {c_name}!")
 
         elif action == "exec":

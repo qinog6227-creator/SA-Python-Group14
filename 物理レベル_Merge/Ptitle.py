@@ -1,6 +1,6 @@
 # Ptitle.py
 import pygame
-import Pparameter
+import PARAMETER
 
 pygame.font.init()
 
@@ -23,7 +23,7 @@ def draw_title(screen):
     
     # A. ゲームタイトルの描画（画面上部中央）
     title_text = FONT.render("SADAME DRAW", True, RED)
-    screen.blit(title_text, Pparameter.centeringY(title_text, 100))
+    screen.blit(title_text, PARAMETER.centeringY(title_text, 100))
     
     # ----------------------------------------------------
     # B. サブタイトル枠の図形を描画 (画面中央より少し上)

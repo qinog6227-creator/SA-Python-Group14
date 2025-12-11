@@ -30,12 +30,8 @@ def main(screen):
 
        
 
-        Ptitle.draw_title(screen)
-
-
-
-
-
+        PbattleG.draw_encountBar(screen, 1)
+    
 
         pygame.display.flip()
 

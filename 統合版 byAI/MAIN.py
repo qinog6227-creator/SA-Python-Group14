@@ -1,6 +1,6 @@
 import pygame
 import sys
-import Pparameter
+import PARAMETER
 import Ptitle
 import Pmap
 import Pbattle_main
@@ -8,7 +8,7 @@ import Presult
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode(Pparameter.SCREEN_SIZE)
+    screen = pygame.display.set_mode(PARAMETER.SCREEN_SIZE)
     pygame.display.set_caption("SADAME DRAW - Heian Bozu Attack -")
     clock = pygame.time.Clock()
 
@@ -17,7 +17,7 @@ def main():
     
     # プレイヤーデータ
     current_stage = 0 # 今クリアしているステージ (0=未クリア)
-    player_hp = Pparameter.PLAYER_MAX_HP
+    player_hp = PARAMETER.PLAYER_MAX_HP
     
     battle_result_flag = False # 勝ったかどうか
 
@@ -34,7 +34,7 @@ def main():
                     if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                         # ゲーム開始初期化
                         current_stage = 0
-                        player_hp = Pparameter.PLAYER_MAX_HP
+                        player_hp = PARAMETER.PLAYER_MAX_HP
                         state = "map"
 
             # リザルト画面の入力

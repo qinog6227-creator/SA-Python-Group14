@@ -1,11 +1,11 @@
 import pygame
 import sys
-import Ptitle
-import Pmap
-import Pbattle_main
-import PbattleG
-import PbattleC
-import Pparameter
+import TITLE
+import MAP
+import MAIN_BATTLE
+import BATTLE
+import CALCURATE
+import PARAMETER
 
 # 文字を書くための「筆（フォント）」を用意
 font = pygame.font.Font(None, 50) 
@@ -16,9 +16,9 @@ font2 = pygame.font.Font(None, 100)
 def run_battle(encount):
     
     #マクロからの初期化
-    enemy_hp = Pparameter.ENEMY_MAX_HP
-    player_hp = Pparameter.PLAYER_MAX_HP
-    deck = Pparameter.DECK_LIST.copy()
+    enemy_hp = PARAMETER.ENEMY_MAX_HP
+    player_hp = PARAMETER.PLAYER_MAX_HP
+    deck = PARAMETER.DECK_LIST.copy()
     
     # バトル中に変わるパラメータ
     stock_attack = 0 
@@ -28,13 +28,13 @@ def run_battle(encount):
     # === バトルループ ===
     while True:
         # --- 2. 表示 (View) ---
-        PbattleG.encountBar(encount)
-        PbattleG.draw_battleStatus(enemy_hp, player_hp, stock_attack, stock_defence)
+        BATTLE.encountBar(encount)
+        BATTLE.draw_battleStatus(enemy_hp, player_hp, stock_attack, stock_defence)
         # ★ここでログを表示する！
-        #PbattleG.draw_logs(current_logs)
-        PbattleG.draw_battleCommand()
+        BATTLE.draw_logs(current_logs)
+        BATTLE.draw_battleCommand()
 
         # --- 3. 入力 (Input) ---
         # LbattleGのメッセージを使って入力を待つ
-        command = input(PbattleG.draw_wait())
+        command = input(BATTLE.draw_wait())
         print("") 

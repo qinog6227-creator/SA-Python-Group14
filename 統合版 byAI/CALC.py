@@ -1,9 +1,9 @@
 import random
-import Pparameter
+import PARAMETER
 
 def init_deck():
     """山札を初期化してシャッフルして返す"""
-    deck = Pparameter.DECK_COMPOSITION.copy()
+    deck = PARAMETER.DECK_COMPOSITION.copy()
     random.shuffle(deck)
     return deck
 
@@ -18,11 +18,11 @@ def draw_card(deck, stockA, stockD):
     card = deck.pop()
     is_skull = False
     
-    if card == Pparameter.CARD_SWORD:
-        stockA += Pparameter.SWORD_DMG
-    elif card == Pparameter.CARD_GUARD:
-        stockD += Pparameter.GUARD_VAL
-    elif card == Pparameter.CARD_SKULL:
+    if card == PARAMETER.CARD_SWORD:
+        stockA += PARAMETER.SWORD_DMG
+    elif card == PARAMETER.CARD_GUARD:
+        stockD += PARAMETER.GUARD_VAL
+    elif card == PARAMETER.CARD_SKULL:
         # ドクロ：全没収
         stockA = 0
         stockD = 0
