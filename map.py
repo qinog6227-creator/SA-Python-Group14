@@ -1,73 +1,51 @@
 import pygame
-import sys
-import math
+import PARAMETER
 
-#window size
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Map Test")
-clock = pygame.time.Clock()
-
-#敵の座標
-enemies = [
-    {"pos": (400, 150), "r": 25, "enabled": False},  # 大
-    {"pos": (400, 300), "r": 20, "enabled": False},  # 中
-    {"pos": (400, 450), "r": 20, "enabled": True},   # 中 
+# ステージの座標 (簡易的)
+NODES = [
+    {"id": 1, "pos": (200, 300), "radius": 40},
+    {"id": 2, "pos": (500, 300), "radius": 40},
+    {"id": 3, "pos": (800, 300), "radius": 60} # ボス
 ]
 
-def is_hover(e, mouse_pos):
-    ex, ey = e["pos"]
-    mx, my = mouse_pos
-    return math.dist((ex, ey), (mx, my)) <= e["r"]
+def draw_map(screen, cleared_stage):
+    screen.fill(PARAMETER.BLACK)
+    
+    # 線を描画
+    pygame.draw.line(screen, PARAMETER.WHITE, NODES[0]["pos"], NODES[1]["pos"], 5)
+    pygame.draw.line(screen, PARAMETER.WHITE, NODES[1]["pos"], NODES[2]["pos"], 5)
 
-#   マップ画面ループ
-in_map = True
-while in_map:
+    font = pygame.font.Font(None, 40)
+    msg = font.render("Select Next Battle", True, PARAMETER.WHITE)
+    screen.blit(msg, (50, 50))
+
     mouse_pos = pygame.mouse.get_pos()
+    clicked_stage = None
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            for e in enemies:
-                if e["enabled"] and is_hover(e, mouse_pos):
-                    in_map = False 
-                    break
-
-    #背景
-    screen.fill((0, 0, 0))
-
-    #線
-    pygame.draw.lines(
-        screen, (255, 255, 255), False,
-        [e["pos"] for e in enemies],
-        3
-    )
-
-    #敵マーク描画
-    for e in enemies:
-        if e["enabled"] and is_hover(e, mouse_pos):
-            # ホバー中の色
-            color = (255, 120, 120)
+    for node in NODES:
+        stage_id = node["id"]
+        pos = node["pos"]
+        r = node["radius"]
+        
+        # 色の決定
+        if stage_id <= cleared_stage:
+            color = (100, 100, 100) # クリア済み(グレー)
+        elif stage_id == cleared_stage + 1:
+            color = PARAMETER.RED # 挑戦可能(赤)
+            # ホバー演出
+            dist = ((mouse_pos[0]-pos[0])**2 + (mouse_pos[1]-pos[1])**2)**0.5
+            if dist < r:
+                color = (255, 100, 100)
+                if pygame.mouse.get_pressed()[0]:
+                    clicked_stage = stage_id
         else:
-            # 通常の色（赤かグレー）
-            color = (255, 50, 50) if e["enabled"] else (120, 120, 120)
+            color = (50, 50, 50) # まだ行けない(暗い)
 
-        pygame.draw.circle(screen, color, e["pos"], e["r"])
-        pygame.draw.circle(screen, (255, 255, 255), e["pos"], e["r"], 2)
+        pygame.draw.circle(screen, color, pos, r)
+        pygame.draw.circle(screen, PARAMETER.WHITE, pos, r, 3)
+        
+        # 番号
+        label = font.render(str(stage_id), True, PARAMETER.WHITE)
+        screen.blit(label, label.get_rect(center=pos))
 
-    pygame.display.flip()
-    clock.tick(60)
-
-#   次の描画
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-    screen.fill((0, 0, 0))
-    pygame.display.flip()
-    clock.tick(60)
+    return clicked_stage
