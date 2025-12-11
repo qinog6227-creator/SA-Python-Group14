@@ -9,21 +9,28 @@ FONT_S = pygame.font.Font(None, 30)
 def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, logs, last_card):
     screen.fill((30, 30, 40)) # 背景色
 
+    # --- 敵画像の描画 (追加) ---
+    enemy_img = PARAMETER.IMG_ENEMY_BATTLE
+    # 画面上部中央に配置 (Y座標を120くらいに設定)
+    enemy_rect = enemy_img.get_rect(center=(PARAMETER.SCREEN_WIDTH//2, 120))
+    screen.blit(enemy_img, enemy_rect)
+
     # --- ヘッダー情報の描画 ---
+    # 画像と被らないように位置を調整 (Y=30 から Y=230 へ変更)
     info_str = f"STAGE: {stage_num}   Enemy HP: {e_hp}/{e_max_hp}   Player HP: {p_hp}/{PARAMETER.PLAYER_MAX_HP}"
     info_text = FONT_M.render(info_str, True, PARAMETER.WHITE)
-    screen.blit(info_text, (50, 30))
+    screen.blit(info_text, (50, 230))
 
     # --- ステータス（溜め量） ---
-    # 攻撃溜め
+    # 位置を少し調整 Y=150, 220 -> Y=280, 350
     atk_text = FONT_L.render(f"ATK Stock: {stockA}", True, PARAMETER.RED)
-    screen.blit(atk_text, (100, 150))
-    # 防御溜め
+    screen.blit(atk_text, (100, 280))
     def_text = FONT_L.render(f"DEF Stock: {stockD}", True, PARAMETER.BLUE)
-    screen.blit(def_text, (100, 220))
+    screen.blit(def_text, (100, 350))
 
     # --- 最後に引いたカードの表示 ---
-    card_rect = pygame.Rect(450, 150, 120, 180)
+    # 位置を少し調整 Y=150 -> Y=280
+    card_rect = pygame.Rect(450, 280, 120, 180)
     color = PARAMETER.GRAY
     label = "Ready"
     
@@ -44,16 +51,17 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
     screen.blit(label_surf, (card_rect.centerx - label_surf.get_width()//2, card_rect.centery - label_surf.get_height()//2))
 
     # --- ログ表示 ---
-    y = 400
-    for log in logs[-5:]: # 最新5件
+    # 位置を少し調整 Y=400 -> Y=480
+    y = 480
+    for log in logs[-4:]: # 表示数を5から4に減らして調整
         t = FONT_S.render(log, True, (200, 200, 200))
         screen.blit(t, (50, y))
         y += 25
 
     # --- ボタン描画 ---
-    # ボタン位置定義 (rectを返す)
-    btn_draw_rect = pygame.Rect(700, 400, 200, 60)
-    btn_exec_rect = pygame.Rect(700, 480, 200, 60)
+    # 位置を少し調整 Y=400, 480 -> Y=480, 550
+    btn_draw_rect = pygame.Rect(700, 480, 200, 50)
+    btn_exec_rect = pygame.Rect(700, 540, 200, 50)
 
     # ドローボタン
     pygame.draw.rect(screen, (200, 150, 50), btn_draw_rect, border_radius=5)
