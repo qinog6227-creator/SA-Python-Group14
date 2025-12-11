@@ -39,7 +39,7 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
 
     if bonus_val > 0:
         # ボーナスがある時だけ表示
-        # 色は目立つようにゴールド (255, 215, 0) にする（赤でもOKです）
+        # 色は目立つようにゴールド (255, 215, 0) にする
         bonus_str = f"Bonus! +{bonus_val}"
         bonus_text = FONT_M.render(bonus_str, True, (255, 215, 0)) 
         
