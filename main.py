@@ -9,7 +9,7 @@ import RESULT
 def main():
     pygame.init()
     screen = pygame.display.set_mode(PARAMETER.SCREEN_SIZE)
-    pygame.display.set_caption("SADAME DRAW - Heian Bozu Attack -")
+    pygame.display.set_caption("SADAME DRAW")
     clock = pygame.time.Clock()
 
     # ゲーム全体の状態管理
