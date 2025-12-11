@@ -1,44 +1,87 @@
-import pygame #おまじない
-import sys #おまじない
-import title #タイトル画面の描画処理をインポート
-import map #マップ画面の描画処理をインポート
+import pygame
+import sys
+import PARAMETER
+import TITLE
+import MAP
+import MAIN_BATTLE
+import RESULT
 
-# メイン関数
 def main():
-    pygame.init() #おまじない
-    screen = pygame.display.set_mode((1000, 500)) #画面サイズを設定
-    pygame.display.set_caption("Heian Bozu Attack") #画面タイトルを設定
-
-    # フォントを設定
-    font1 = pygame.font.Font(None, 40)
-
-    #state変数で画面遷移を管理
-    state = "title"
+    pygame.init()
+    screen = pygame.display.set_mode(PARAMETER.SCREEN_SIZE)
+    pygame.display.set_caption("SADAME DRAW - Heian Bozu Attack -")
     clock = pygame.time.Clock()
-    running = True
 
-    while running:
+    # ゲーム全体の状態管理
+    state = "title" # title, map, battle, result
+    
+    # プレイヤーデータ
+    current_stage = 0 # 今クリアしているステージ (0=未クリア)
+    player_hp = PARAMETER.PLAYER_MAX_HP
+    
+    battle_result_flag = False # 勝ったかどうか
+
+    while True:
+        # イベント処理（共通の終了処理のみ）
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: # ×ボタンが押されたら
-                running = False #ループを抜けて終了する
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            # タイトル画面の入力
+            if state == "title":
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+                        # ゲーム開始初期化
+                        current_stage = 0
+                        player_hp = PARAMETER.PLAYER_MAX_HP
+                        state = "map"
 
-            if event.type == pygame.KEYDOWN: #キーが押されたら
-                if state == "title" and event.key == pygame.K_SPACE: # SPACEキーが押されたら
-                    state = "map" #マップ画面へ遷移
-                if state == "map" and event.key == pygame.K_ESCAPE: # ESCキーが押されたら
-                    state = "title" #タイトル画面へ遷移
+            # リザルト画面の入力
+            if state == "result":
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        if battle_result_flag: # 勝ち
+                            if current_stage == 3: # 全クリ
+                                state = "title"
+                            else:
+                                state = "map"
+                        else: # 負け
+                            state = "title"
 
-        if state == "title": #タイトル画面ならば
-            title.draw_title(screen, font1) #タイトル画面の関数を呼び出す
-        elif state == "map": #マップ画面ならば
-            map.draw_map(screen) # マップ画面の関数を呼び出す
+        # --- 各シーンの描画・更新 ---
+        
+        if state == "title":
+            TITLE.draw_title(screen)
 
-        pygame.display.update() #おまじない
+        elif state == "map":
+            selected = MAP.draw_map(screen, current_stage)
+            if selected is not None:
+                # バトル開始へ遷移
+                res, new_hp = MAIN_BATTLE.battle_loop(screen, selected, player_hp)
+                
+                # バトル終了後
+                
+                # ★★★ 削除またはコメントアウト！ ★★★
+                # player_hp = PARAMETER.PLAYER_MAX_HP # ← これがあると毎回リセットされてしまう！
+                
+                # その代わり、バトル後のHPを現在のHPとして更新
+                player_hp = new_hp 
+
+                if res == "win":
+                    current_stage = selected
+                    battle_result_flag = True
+                else:
+                    battle_result_flag = False
+                
+                state = "result"
+
+        elif state == "result":
+            is_clear = (current_stage == 3 and battle_result_flag)
+            RESULT.draw_result(screen, battle_result_flag, is_clear)
+
+        pygame.display.update()
         clock.tick(60)
 
-    pygame.quit() #おまじない(終了時)
-    sys.exit() #おまじない(終了時)
-
-
-if __name__ == "__main__": #おまじない
+if __name__ == "__main__":
     main()

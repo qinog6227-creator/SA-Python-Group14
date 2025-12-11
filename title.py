@@ -1,46 +1,25 @@
 import pygame
-import os
-import sys
+import PARAMETER
 
-pygame.init()
+def draw_title(screen):
+    screen.fill(PARAMETER.BLACK)
+    
+    # タイトルロゴ
+    font_title = pygame.font.Font(None, 150)
+    title_text = font_title.render("SADAME DRAW", True, PARAMETER.RED)
+    rect = title_text.get_rect(center=(PARAMETER.SCREEN_WIDTH//2, 200))
+    screen.blit(title_text, rect)
 
-# 画面サイズ
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Title Screen")
+    # サブタイトル
+    font_sub = pygame.font.Font(None, 75)
+    sub_text = font_sub.render("Only Destiny...", True, PARAMETER.WHITE)
+    rect_sub = sub_text.get_rect(center=(PARAMETER.SCREEN_WIDTH//2, 300))
+    screen.blit(sub_text, rect_sub)
 
-# タイトル画像のパス
-BASE = os.path.dirname(__file__)
-TITLE_IMG_PATH = os.path.join(BASE, "pictures", "title", "title(ver1).png")
-
-# タイトル画像読み込み
-title_img = pygame.image.load(TITLE_IMG_PATH).convert_alpha()
-title_img = pygame.transform.scale(title_img, (WIDTH, HEIGHT))
-
-clock = pygame.time.Clock()
-
-# 状態
-STATE_TITLE = 0
-STATE_GAME = 1
-state = STATE_TITLE
-
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-        # クリックで開始
-        if state == STATE_TITLE:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                state = STATE_GAME
-
-    # 描画
-    if state == STATE_TITLE:
-        screen.blit(title_img, (0, 0))
-
-    elif state == STATE_GAME:
-        screen.fill((0, 0, 0))
-
-    pygame.display.update()
-    clock.tick(60)
+    # スタート案内
+    msg = font_sub.render("Press [SHIFT] to Start", True, PARAMETER.BLUE)
+    
+    # 点滅の演出
+    if pygame.time.get_ticks() % 1000 < 500:
+        rect_msg = msg.get_rect(center=(PARAMETER.SCREEN_WIDTH//2, 450))
+        screen.blit(msg, rect_msg)

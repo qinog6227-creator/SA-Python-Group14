@@ -1,40 +1,37 @@
 import pygame
-import sys
+import PARAMETER
 
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Result Screen")
+# --- ★追加: 画像のロード ---
+# 画像サイズを画面サイズ(1000x600)に合わせる
+IMG_WIN = pygame.transform.scale(pygame.image.load("assets/GoToNextStage.png"), PARAMETER.SCREEN_SIZE)
+IMG_LOSE = pygame.transform.scale(pygame.image.load("assets/GameOver.png"), PARAMETER.SCREEN_SIZE)
+IMG_CLEAR = pygame.transform.scale(pygame.image.load("assets/GameClear.png"), PARAMETER.SCREEN_SIZE)
 
-# 画像読み込み
-game_over_img = pygame.image.load("pictures/result/gameover.png")
-game_clear_img = pygame.image.load("pictures/result/gameclear.png")
-next_stage_img = pygame.image.load("pictures/result/next_stage.png")  # ← 追加
+def draw_result(screen, is_win, is_clear):
+    # 背景として画像を画面いっぱいに表示
+    
+    if not is_win: # 負け
+        screen.blit(IMG_LOSE, (0, 0))
+        
+    elif is_clear: # 全クリア
+        screen.blit(IMG_CLEAR, (0, 0))
+        
+    else: # ステージクリア（次へ）
+        screen.blit(IMG_WIN, (0, 0))
 
-game_over_img = pygame.transform.scale(game_over_img, (800, 600))
-game_clear_img = pygame.transform.scale(game_clear_img, (800, 600))
-next_stage_img = pygame.transform.scale(next_stage_img, (800, 600))
+    # --- 案内テキスト (画像の上に重ねて表示) ---
+    # 画像があるので文字は見やすくするために縁取りなど工夫が必要かもしれませんが
+    # いったんシンプルに白文字で下に表示します
+    
+    font_s = pygame.font.Font(None, 50)
+    
+    if not is_win:
+        msg = "Press SPACE to Return Title"
+    elif is_clear:
+        msg = "Thank you for playing!"
+    else:
+        msg = "Press SPACE for Next Stage"
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-    screen.fill((0, 0, 0))
-
-    # ◆ 表示ロジック ◆
-    # ・負け（lose） → どのステージでも gameover
-    # ・勝ち（win）かつ stage == 3 → gameclear
-    # ・勝ち（win）かつ stage が 1 or 2 → next_stage
-    #関数result(win or lose), stage(1~3)を設定すると動くようになります
-
-    if result == "lose":
-        screen.blit(game_over_img, (0, 0))
-
-    elif result == "win":
-        if stage == 3:
-            screen.blit(game_clear_img, (0, 0))      # 最終ステージ勝利
-        else:
-            screen.blit(next_stage_img, (0, 0))      # ステージ1、2クリア → 次へ
-
-    pygame.display.update()
+    text = font_s.render(msg, True, PARAMETER.WHITE)
+    # 画面下部に配置
+    screen.blit(text, text.get_rect(center=(PARAMETER.SCREEN_WIDTH//2, 550)))
