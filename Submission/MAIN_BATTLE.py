@@ -14,10 +14,11 @@ def battle_loop(screen, stage_num, player_hp):
 
     # バトル初期状態
     stockA = 0
-    stockD = 0
+    # stockD = 0 ← 削除 (もう使わない)
     deck = CALC.init_deck()
     logs = ["Battle Start!"]
     last_card = None
+    player_hand = [] # 手札リストをここで初期化
     
     running = True
     result = "running" # win, lose, running
@@ -48,17 +49,27 @@ def battle_loop(screen, stage_num, player_hp):
 
         # --- ロジック反映 ---
         if action == "draw":
-            card, stockA, stockD, is_skull, deck = CALC.draw_card(deck, stockA, stockD)
+            # ★変更: CALC.draw_card から stockD を受け取らない
+            card, stockA, is_skull, deck = CALC.draw_card(deck, stockA)
+            
             last_card = card
+            player_hand.append(card)
+            
             if is_skull:
                 logs.append("SKULL! Stocks Lost & Enemy Turn!")
-                # ドクロ強制ターンエンド処理
-                dmg = CALC.calc_enemy_damage(e_power, 0) # ガード0で受ける
+                # ★変更: 防御値なしでダメージ計算
+                dmg = CALC.calc_enemy_damage(e_power) 
                 player_hp -= dmg
                 logs.append(f"Enemy Attack! {dmg} dmg taken.")
             else:
-                c_name = "Sword" if card == PARAMETER.CARD_SWORD else "Guard"
-                logs.append(f"Draw {c_name}!")
+                if card == PARAMETER.CARD_SWORD:
+                    logs.append(f"Draw Sword! ATK UP!")
+                
+                # ★★★ ここでHP回復処理！ ★★★
+                elif card == PARAMETER.CARD_GUARD:
+                    heal_val = PARAMETER.GUARD_VAL # 1回復
+                    player_hp += heal_val
+                    logs.append(f"Draw Shield! HP +{heal_val}!")
 
         elif action == "exec":
             # プレイヤー攻撃
@@ -66,18 +77,20 @@ def battle_loop(screen, stage_num, player_hp):
             e_hp -= dmg_to_enemy
             logs.append(f"Attack! {dmg_to_enemy} dmg to Enemy.")
             
-            # リセット
             stockA = 0 
+            player_hand = [] 
+            last_card = None
             
-            # 敵が生きていれば反撃
+            # 敵の反撃
             if e_hp > 0:
-                dmg_to_player = CALC.calc_enemy_damage(e_power, stockD)
+                # ★変更: 防御値なしでダメージ計算 (stockDを渡さない)
+                dmg_to_player = CALC.calc_enemy_damage(e_power)
                 player_hp -= dmg_to_player
-                stockD = 0 # ガードは使い捨て
-                if dmg_to_player > 0:
-                    logs.append(f"Enemy Attack! {dmg_to_player} dmg taken.")
-                else:
-                    logs.append("Perfect Guard!")
+                
+                # stockD = 0 ← 削除
+                
+                logs.append(f"Enemy Attack! {dmg_to_player} dmg taken.")
+
 
         # --- 判定 ---
         if e_hp <= 0:
@@ -88,7 +101,11 @@ def battle_loop(screen, stage_num, player_hp):
             running = False
 
         # --- 描画 ---
-        BATTLE.draw_battle_screen(screen, stage_num, player_hp, e_hp, e_max_hp, stockA, stockD, logs, last_card)
+        # ★修正: stockD の場所を 0 に書き換える
+        BATTLE.draw_battle_screen(screen, stage_num, player_hp, e_hp, e_max_hp, stockA, 0, logs, last_card)
+
+        # 関数を呼び出し、手札リストを渡す
+        BATTLE.draw_player_hand(screen, player_hand)
         pygame.display.update()
         clock.tick(30)
 

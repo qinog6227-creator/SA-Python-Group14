@@ -1,0 +1,10 @@
+# 図形や画像を中心に置く関数
+def centerting(screen, width, height, name):
+# 1. 貼り付ける X 座標を計算 (画面の半分 - 画像の幅の半分)
+        center_x = (width / 2) - (name.get_width() / 2)
+        
+        # 2. 貼り付ける Y 座標を計算 (画面の半分 - 画像の高さの半分)
+        center_y = (height / 2) - (name.get_height() / 2)
+        
+        # 3. 貼り付ける
+        screen.blit(name, (center_x, center_y))

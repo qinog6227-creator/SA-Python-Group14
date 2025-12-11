@@ -1,8 +1,8 @@
-#バトルに関するパラメータのマクロ
+#マクロと便利関数
 
 # --- パラメータ設定 ---
 PLAYER_MAX_HP = 30
-ENEMY_MAX_HP = 5
+ENEMY_MAX_HP = 1
 
 # ステージごとの敵の攻撃力
 ENEMY_POWER_LIST = [2, 4, 6] 
