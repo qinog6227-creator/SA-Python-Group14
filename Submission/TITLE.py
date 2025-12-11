@@ -5,15 +5,15 @@ def draw_title(screen):
     screen.fill(PARAMETER.BLACK)
     
     # タイトルロゴ
-    font_title = pygame.font.Font(None, 100)
+    font_title = pygame.font.Font(None, 150)
     title_text = font_title.render("SADAME DRAW", True, PARAMETER.RED)
     rect = title_text.get_rect(center=(PARAMETER.SCREEN_WIDTH//2, 200))
     screen.blit(title_text, rect)
 
     # サブタイトル
-    font_sub = pygame.font.Font(None, 40)
-    sub_text = font_sub.render("- Heian Bozu Attack -", True, PARAMETER.WHITE)
-    rect_sub = sub_text.get_rect(center=(PARAMETER.SCREEN_WIDTH//2, 280))
+    font_sub = pygame.font.Font(None, 75)
+    sub_text = font_sub.render("Only Destiny...", True, PARAMETER.WHITE)
+    rect_sub = sub_text.get_rect(center=(PARAMETER.SCREEN_WIDTH//2, 300))
     screen.blit(sub_text, rect_sub)
 
     # スタート案内
