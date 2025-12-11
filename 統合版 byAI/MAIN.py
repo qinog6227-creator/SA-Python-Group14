@@ -3,7 +3,7 @@ import sys
 import PARAMETER
 import TITLE
 import MAP
-import MAIN
+import MAIN_BATTLE  # ← ここを修正しました (元は import MAIN でした)
 import RESULT
 
 def main():
@@ -58,9 +58,11 @@ def main():
             selected = MAP.draw_map(screen, current_stage)
             if selected is not None:
                 # バトル開始へ遷移
-                # MAINを呼び出して制御を渡す
+                # MAIN_BATTLEを呼び出して制御を渡す
                 # メインループを一時的に抜けてバトルループに入るような挙動
-                res, new_hp = MAIN.battle_loop(screen, selected, player_hp)
+                
+                # ↓ここも修正しました (MAIN.battle_loop から MAIN_BATTLE.battle_loop へ)
+                res, new_hp = MAIN_BATTLE.battle_loop(screen, selected, player_hp)
                 
                 # バトル終了後
                 player_hp = new_hp
