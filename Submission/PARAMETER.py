@@ -30,7 +30,8 @@ GUARD_VAL = 1
 
 # デッキ構成 (ドローし放題の山札の比率)
 # ここでは比率として定義し、枯渇したらリシャッフルする形にする
-DECK_COMPOSITION = [CARD_SWORD]*20 + [CARD_GUARD]*15 + [CARD_SKULL]*5
+#小倉百人一首の殿66枚、姫21枚、坊主13枚と同じ数にしている
+DECK_COMPOSITION = [CARD_SWORD]*66 + [CARD_GUARD]*21 + [CARD_SKULL]*13
 
 # 色をタプルで定義しておく
 BLACK = (0, 0, 0)

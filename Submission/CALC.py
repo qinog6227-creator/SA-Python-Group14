@@ -39,7 +39,18 @@ def calc_enemy_damage(enemy_power):
     """敵の攻撃ダメージ計算（素通り）"""
     return enemy_power
 
+# 3枚溜めるごとにボーナスダメージ
 def calc_player_damage(stockA):
-    """プレイヤーの攻撃ダメージ計算（溜めた分すべて）"""
-    damage = stockA
-    return damage
+    """プレイヤーの攻撃ダメージ計算"""
+    
+    # 1. 基本ダメージ（溜めた枚数）
+    base_damage = stockA
+    
+    # 2. ボーナス計算（3枚ごとに +2 ダメージ）
+    # 割り算の商（//）を使うので、3, 4, 5枚なら「1セット」、6, 7, 8枚なら「2セット」と自動計算されます
+    bonus = 2 * (stockA // 3)
+    
+    # 合計
+    total_damage = base_damage + bonus
+    
+    return total_damage

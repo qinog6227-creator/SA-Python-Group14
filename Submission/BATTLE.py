@@ -27,6 +27,26 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
     screen.blit(info_text2, (30, 70))
 
 
+    # --- 3枚ごとのbonus攻撃力ステータス（溜め量）のテキスト描画 ---
+    
+    # 1. まずいつもの攻撃ストックを表示
+    atk_text = FONT_L.render(f"ATK Stock: {stockA}", True, PARAMETER.RED)
+    screen.blit(atk_text, (700, 30))
+    
+    # ★追加: ボーナス表示のロジック
+    # 「3枚ごとにボーナス」の計算をして、0より大きければ表示する
+    bonus_val = 2 * (stockA // 3)
+
+    if bonus_val > 0:
+        # ボーナスがある時だけ表示
+        # 色は目立つようにゴールド (255, 215, 0) にする（赤でもOKです）
+        bonus_str = f"Bonus! +{bonus_val}"
+        bonus_text = FONT_M.render(bonus_str, True, (255, 215, 0)) 
+        
+        # ATK Stock のすぐ下 (Y=80) に表示
+        screen.blit(bonus_text, (700, 80))
+
+
 # --- 敵の描画 (図形) ---
     
     # 敵の基本位置 (画面中央より少し上)
