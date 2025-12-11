@@ -1,10 +1,10 @@
 import pygame
 import sys
 import PARAMETER
-import Ptitle
-import Pmap
-import Pbattle_main
-import Presult
+import TITLE
+import MAP
+import MAIN
+import RESULT
 
 def main():
     pygame.init()
@@ -52,15 +52,15 @@ def main():
         # --- 各シーンの描画・更新 ---
         
         if state == "title":
-            Ptitle.draw_title(screen)
+            TITLE.draw_title(screen)
 
         elif state == "map":
-            selected = Pmap.draw_map(screen, current_stage)
+            selected = MAP.draw_map(screen, current_stage)
             if selected is not None:
                 # バトル開始へ遷移
-                # Pbattle_mainを呼び出して制御を渡す
+                # MAINを呼び出して制御を渡す
                 # メインループを一時的に抜けてバトルループに入るような挙動
-                res, new_hp = Pbattle_main.battle_loop(screen, selected, player_hp)
+                res, new_hp = MAIN.battle_loop(screen, selected, player_hp)
                 
                 # バトル終了後
                 player_hp = new_hp
@@ -74,7 +74,7 @@ def main():
 
         elif state == "result":
             is_clear = (current_stage == 3 and battle_result_flag)
-            Presult.draw_result(screen, battle_result_flag, is_clear)
+            RESULT.draw_result(screen, battle_result_flag, is_clear)
 
         pygame.display.update()
         clock.tick(60)

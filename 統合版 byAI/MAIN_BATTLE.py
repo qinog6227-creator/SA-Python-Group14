@@ -1,7 +1,7 @@
 import pygame
 import PARAMETER
-import PbattleC
-import PbattleG
+import CALC
+import BATTLE
 
 def battle_loop(screen, stage_num, player_hp):
     clock = pygame.time.Clock()
@@ -15,7 +15,7 @@ def battle_loop(screen, stage_num, player_hp):
     # バトル初期状態
     stockA = 0
     stockD = 0
-    deck = PbattleC.init_deck()
+    deck = CALC.init_deck()
     logs = ["Battle Start!"]
     last_card = None
     
@@ -48,12 +48,12 @@ def battle_loop(screen, stage_num, player_hp):
 
         # --- ロジック反映 ---
         if action == "draw":
-            card, stockA, stockD, is_skull, deck = PbattleC.draw_card(deck, stockA, stockD)
+            card, stockA, stockD, is_skull, deck = CALC.draw_card(deck, stockA, stockD)
             last_card = card
             if is_skull:
                 logs.append("SKULL! Stocks Lost & Enemy Turn!")
                 # ドクロ強制ターンエンド処理
-                dmg = PbattleC.calc_enemy_damage(e_power, 0) # ガード0で受ける
+                dmg = CALC.calc_enemy_damage(e_power, 0) # ガード0で受ける
                 player_hp -= dmg
                 logs.append(f"Enemy Attack! {dmg} dmg taken.")
             else:
@@ -62,7 +62,7 @@ def battle_loop(screen, stage_num, player_hp):
 
         elif action == "exec":
             # プレイヤー攻撃
-            dmg_to_enemy = PbattleC.calc_player_damage(stockA)
+            dmg_to_enemy = CALC.calc_player_damage(stockA)
             e_hp -= dmg_to_enemy
             logs.append(f"Attack! {dmg_to_enemy} dmg to Enemy.")
             
@@ -71,7 +71,7 @@ def battle_loop(screen, stage_num, player_hp):
             
             # 敵が生きていれば反撃
             if e_hp > 0:
-                dmg_to_player = PbattleC.calc_enemy_damage(e_power, stockD)
+                dmg_to_player = CALC.calc_enemy_damage(e_power, stockD)
                 player_hp -= dmg_to_player
                 stockD = 0 # ガードは使い捨て
                 if dmg_to_player > 0:
@@ -88,7 +88,7 @@ def battle_loop(screen, stage_num, player_hp):
             running = False
 
         # --- 描画 ---
-        PbattleG.draw_battle_screen(screen, stage_num, player_hp, e_hp, e_max_hp, stockA, stockD, logs, last_card)
+        BATTLE.draw_battle_screen(screen, stage_num, player_hp, e_hp, e_max_hp, stockA, stockD, logs, last_card)
         pygame.display.update()
         clock.tick(30)
 
