@@ -43,13 +43,3 @@ def calc_player_damage(stockA):
     """プレイヤーの攻撃ダメージ計算（溜めた分すべて）"""
     damage = stockA
     return damage
-
-def calc_enemy_damage(enemy_power, stockD):
-    """
-    敵の攻撃ダメージ計算
-    ガード値を引いたダメージを返す（最低0）
-    """
-    damage = enemy_power - stockD
-    if damage < 0:
-        damage = 0
-    return damage

@@ -101,11 +101,11 @@ def battle_loop(screen, stage_num, player_hp):
             running = False
 
         # --- 描画 ---
-        BATTLE.draw_battle_screen(screen, stage_num, player_hp, e_hp, e_max_hp, stockA, stockD, logs, last_card)
+        # ★修正: stockD の場所を 0 に書き換える
+        BATTLE.draw_battle_screen(screen, stage_num, player_hp, e_hp, e_max_hp, stockA, 0, logs, last_card)
 
         # 関数を呼び出し、手札リストを渡す
         BATTLE.draw_player_hand(screen, player_hand)
-
         pygame.display.update()
         clock.tick(30)
 
