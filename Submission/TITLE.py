@@ -18,7 +18,8 @@ def draw_title(screen):
 
     # スタート案内
     msg = font_sub.render("Press [SHIFT] to Start", True, PARAMETER.BLUE)
-    # 点滅演出っぽく
+    
+    # 点滅の演出
     if pygame.time.get_ticks() % 1000 < 500:
         rect_msg = msg.get_rect(center=(PARAMETER.SCREEN_WIDTH//2, 450))
         screen.blit(msg, rect_msg)

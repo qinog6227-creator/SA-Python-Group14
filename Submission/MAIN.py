@@ -58,12 +58,16 @@ def main():
             selected = MAP.draw_map(screen, current_stage)
             if selected is not None:
                 # バトル開始へ遷移
-                # MAIN_BATTLEを呼び出して制御を渡す
-                # メインループを一時的に抜けてバトルループに入るような挙動
                 res, new_hp = MAIN_BATTLE.battle_loop(screen, selected, player_hp)
                 
                 # バトル終了後
-                player_hp = new_hp
+                
+                # ★★★ 削除またはコメントアウト！ ★★★
+                # player_hp = PARAMETER.PLAYER_MAX_HP # ← これがあると毎回リセットされてしまう！
+                
+                # その代わり、バトル後のHPを現在のHPとして更新
+                player_hp = new_hp 
+
                 if res == "win":
                     current_stage = selected
                     battle_result_flag = True
