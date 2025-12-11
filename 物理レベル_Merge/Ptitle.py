@@ -1,11 +1,8 @@
-# Ptitle.py
 import pygame
-import PARAMETER
+import Pparameter
 
 pygame.font.init()
-
-#フォントの設定
-FONT = pygame.font.Font(None, 50)
+FONT = pygame.font.Font(None, 50) #フォント設定
 #追加可能
 
 
@@ -17,47 +14,29 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 
-# Ptitle.py の draw_title_screen 関数の中身 (完成形)
-
+#タイトル画面のグラフィック
 def draw_title(screen):
     
-    # A. ゲームタイトルの描画（画面上部中央）
-    title_text = FONT.render("SADAME DRAW", True, RED)
-    screen.blit(title_text, PARAMETER.centeringY(title_text, 100))
+    #ゲームタイトル
+    text_title1 = FONT.render("SADAME DRAW", True, RED)
+    screen.blit(text_title1, Pparameter.centeringY(text_title1, 100))
     
-    # ----------------------------------------------------
-    # B. サブタイトル枠の図形を描画 (画面中央より少し上)
+    #ゲームタイトル枠
+    pygame.draw.rect(screen, WHITE, (100, 200, 600, 100), 0)
+
+    #ゲームタイトル
+    text_title2 = FONT.render("Bozu-Mekuri + Card Game", True, BLACK)
+    screen.blit(text_title2, Pparameter.centeringY(text_title2, 225))
     
-    # 矩形情報: 左上隅(200, 200)から幅400, 高さ150の大きな枠
-    sub_rect_info = (200, 200, 400, 150)
-    sub_rect = pygame.Rect(sub_rect_info)
+    #スタート指示枠
+    pygame.draw.rect(screen, WHITE, (100, 450, 600, 100), 0)
     
-    # 枠線の描画 (太さ2)
-    pygame.draw.rect(screen, WHITE, sub_rect, width=2, border_radius=5) 
-    
-    # 枠内の文字
-    sub_text = FONT.render("Press START to change your Fate.", True, WHITE)
-    screen.blit(sub_text, sub_text.get_rect(center=(400, 275))) # 枠の中央に配置
-    # ----------------------------------------------------
-    
-    # C. スタートボタンの図形を描画（画面下部中央）
-    
-    # 矩形情報: 左上隅(300, 420)から幅200, 高さ60のボタン
-    button_x = 300 
-    button_y = 420 
-    button_width = 200
-    button_height = 60
-    
-    button_rect_info = (button_x, button_y, button_width, button_height)
-    button_rect = pygame.Rect(button_rect_info)
-    
-    # 1. 背景と枠線を描画する
-    pygame.draw.rect(screen, (70, 70, 70), button_rect, border_radius=10)
-    pygame.draw.rect(screen, WHITE, button_rect, width=3, border_radius=10)
-    
-    # 2. スタートボタンの文字
-    start_text = FONT.render("START", True, WHITE)
-    screen.blit(start_text, start_text.get_rect(center=(400, 450)))
+    #スタート指示テキスト
+    text_start = FONT.render("Press SHIFT Key to START", True, BLACK) 
+    screen.blit(text_start, Pparameter.centeringY(text_start, 500))
+
+
+
 
 
 def draw_wait_start():

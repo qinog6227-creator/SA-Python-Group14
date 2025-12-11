@@ -1,11 +1,11 @@
 import pygame
 import PARAMETER
 
-# ステージの座標
+# ステージの座標 (簡易的)
 NODES = [
     {"id": 1, "pos": (200, 300), "radius": 40},
     {"id": 2, "pos": (500, 300), "radius": 40},
-    {"id": 3, "pos": (800, 300), "radius": 60}
+    {"id": 3, "pos": (800, 300), "radius": 60} # ボス
 ]
 
 def draw_map(screen, cleared_stage):
@@ -25,37 +25,26 @@ def draw_map(screen, cleared_stage):
     for node in NODES:
         stage_id = node["id"]
         pos = node["pos"]
-        r = node["radius"] # 今回は画像の配置基準に使います
+        r = node["radius"]
         
-        # 画像の準備
-        img = PARAMETER.IMG_ENEMY_MAP
-        # 画像の中心をノードの座標に合わせる
-        img_rect = img.get_rect(center=pos)
-
-        # 状態判定と描画
+        # 色の決定
         if stage_id <= cleared_stage:
-            # クリア済み：少し暗く表示する演出
-            dark_img = img.copy()
-            # 黒を乗算して暗くする
-            dark_img.fill((100, 100, 100), special_flags=pygame.BLEND_RGB_MULT)
-            screen.blit(dark_img, img_rect)
-            
+            color = (100, 100, 100) # クリア済み(グレー)
         elif stage_id == cleared_stage + 1:
-            # 挑戦可能：そのまま表示
-            screen.blit(img, img_rect)
-            # ホバー判定（マウスが画像の範囲内にあるか）
-            if img_rect.collidepoint(mouse_pos):
-                # ホバー時に赤い枠を表示
-                pygame.draw.rect(screen, PARAMETER.RED, img_rect, 3)
+            color = PARAMETER.RED # 挑戦可能(赤)
+            # ホバー演出
+            dist = ((mouse_pos[0]-pos[0])**2 + (mouse_pos[1]-pos[1])**2)**0.5
+            if dist < r:
+                color = (255, 100, 100)
                 if pygame.mouse.get_pressed()[0]:
                     clicked_stage = stage_id
         else:
-            # まだ行けない：さらに暗く表示
-            very_dark_img = img.copy()
-            very_dark_img.fill((50, 50, 50), special_flags=pygame.BLEND_RGB_MULT)
-            screen.blit(very_dark_img, img_rect)
+            color = (50, 50, 50) # まだ行けない(暗い)
 
-        # 番号を画像の上に重ねて表示
+        pygame.draw.circle(screen, color, pos, r)
+        pygame.draw.circle(screen, PARAMETER.WHITE, pos, r, 3)
+        
+        # 番号
         label = font.render(str(stage_id), True, PARAMETER.WHITE)
         screen.blit(label, label.get_rect(center=pos))
 
