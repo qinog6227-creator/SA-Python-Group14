@@ -55,7 +55,7 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
     
     # ステージによって敵の見た目を変える
     if stage_num == 3: # ボス (大きく、赤い)
-        enemy_w, enemy_h = 200, 200
+        enemy_w, enemy_h = 190, 190
         enemy_color = (200, 50, 50) # 赤
         eye_color = (255, 255, 0)   # 黄色い目
     else: # ザコ敵 (小さく、緑っぽい)
