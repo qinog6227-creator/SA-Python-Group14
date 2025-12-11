@@ -7,7 +7,7 @@ pygame.font.init()
 FONT_TITLE = pygame.font.Font(None, 80)
 FONT_SUB = pygame.font.Font(None, 40)
 
-#色をタプルの形で設定
+#色の設定
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 RED = (255,0,0)

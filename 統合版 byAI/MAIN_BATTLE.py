@@ -1,5 +1,4 @@
 import pygame
-import sys  # ←これを追加！
 import PARAMETER
 import CALC
 import BATTLE

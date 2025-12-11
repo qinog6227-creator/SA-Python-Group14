@@ -2,11 +2,6 @@ import pygame
 import sys
 import Ptitle
 import Pmap
-import Pbattle_main
-import PbattleG
-import PbattleC
-import Pparameter
-
 
 # 1. 準備（画用紙を作る）
 pygame.init()
@@ -29,11 +24,30 @@ def main(screen):
         screen.fill((0,0,0))
 
        
+        def draw_encountBar(screen,encount):
+    text_title = FONT.render(f"{encount}st Round", True, WHITE)
+    screen.blit(text_title,Pparameter.centeringY(text_title, 60))
 
-        PbattleG.draw_encountBar(screen, 1)
+
+def draw_battleStatus(screen, e_hp, p_hp, stockA, stockD): 
+    text_bar = FONT.render(f"----- Latest Imformation -----", True, WHITE)
+    text_enemysta = FONT.render(f"Enemy HP: {e_hp}", True, WHITE)
+    text_playersta = FONT.render(f"Player HP: {p_hp}", True, WHITE)
+    text_stockA = FONT.render(f"Stock Attack Card: {stockA}", True, WHITE)
+    text_stockD = FONT.render(f"Stock Defense Card: {stockD}", True, WHITE)
+    screen.blit(text_bar, (50, 150))
+    screen.blit(text_enemysta, (50, 190))
+    screen.blit(text_playersta, (50, 230))
+    screen.blit(text_stockA, (50, 270))
+    screen.blit(text_stockD, (50, 310))
+
+    draw_battleCommand(screen):
+
+    draw_card(screen):
+ 
     
 
-        pygame.display.flip()
+    pygame.display.flip()
 
 if __name__ == '__main__':
     main(screen)
