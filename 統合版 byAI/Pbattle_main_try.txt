@@ -1,0 +1,89 @@
+import PbattleG
+import PbattleC
+import Pparameter
+import pygame
+
+# バトルの状態管理用
+battle_state = {
+    "deck": [],
+    "player_hp": 0,
+    "enemy_hp": 0,
+    "stock_attack": 0,
+    "stock_defence": 0,
+    "logs": [],
+    "phase": "draw"  # draw, command, enemy
+}
+
+def battle_init():
+    battle_state["deck"] = Pparameter.DECK_LIST.copy()
+    battle_state["player_hp"] = Pparameter.PLAYER_MAX_HP
+    battle_state["enemy_hp"] = Pparameter.ENEMY_MAX_HP
+    battle_state["stock_attack"] = 0
+    battle_state["stock_defence"] = 0
+    battle_state["logs"] = ["----- バトル開始 -----"]
+    battle_state["phase"] = "draw"
+
+def run_battle(screen, encount, command=None):
+    """
+    1フレームだけ進める形式。
+    command に 'd' (ドロー) か 'c' (攻撃) を渡すと入力処理される
+    """
+    # 描画
+    screen.fill((0,0,0))
+    PbattleG.draw_encountBar(screen, encount)
+    PbattleG.draw_battleStatus(
+        screen,
+        battle_state["enemy_hp"],
+        battle_state["player_hp"],
+        battle_state["stock_attack"],
+        battle_state["stock_defence"]
+    )
+    PbattleG.draw_logs(screen, battle_state["logs"][-15:])
+    PbattleG.draw_battleCommand(screen)
+
+    # フェーズ処理
+    if battle_state["phase"] == "draw" and command == 'd':
+        battle_state["deck"], battle_state["player_hp"], \
+        battle_state["stock_attack"], battle_state["stock_defence"], \
+        force_end, new_logs = PbattleC.calc_draw(
+            battle_state["deck"],
+            battle_state["player_hp"],
+            battle_state["stock_attack"],
+            battle_state["stock_defence"]
+        )
+        battle_state["logs"] = new_logs
+        if force_end:
+            battle_state["phase"] = "enemy"
+        else:
+            battle_state["phase"] = "command"
+
+    elif battle_state["phase"] == "command" and command == 'c':
+        battle_state["enemy_hp"], new_logs = PbattleC.calc_player_attack(
+            battle_state["enemy_hp"],
+            battle_state["stock_attack"]
+        )
+        battle_state["logs"] = new_logs
+        battle_state["stock_attack"] = 0
+        battle_state["phase"] = "enemy"
+
+    elif battle_state["phase"] == "enemy":
+        if battle_state["enemy_hp"] > 0:
+            battle_state["player_hp"], enemy_logs = PbattleC.calc_enemy_turn(
+                battle_state["player_hp"],
+                battle_state["stock_defence"],
+                1  # stage番号は仮
+            )
+            battle_state["logs"].extend(enemy_logs)
+            battle_state["stock_defence"] = 0
+        battle_state["phase"] = "draw"
+
+    # 勝敗判定
+    if battle_state["enemy_hp"] <= 0:
+        battle_state["logs"].append("\n>> 勝利！")
+        return "win"
+    elif battle_state["player_hp"] <= 0:
+        battle_state["logs"].append("\n>> 敗北...")
+        return "lose"
+
+    # バトル継続
+    return None
