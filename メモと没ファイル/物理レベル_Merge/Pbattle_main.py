@@ -16,14 +16,15 @@ battle_state = {
 
 # 初期化処理
 def battle_init(encount):
-    battle_state["deck"] = Pparameter.DECK_LIST.copy()
-    battle_state["player_hp"] = Pparameter.PLAYER_MAX_HP
-    battle_state["enemy_hp"] = Pparameter.ENEMY_MAX_HP
-    battle_state["stock_attack"] = 0
-    battle_state["stock_defence"] = 0
-    battle_state["logs"] = [f"----- {encount} 戦目 バトル開始 -----"]
-    battle_state["phase"] = "draw"
+    global deck, player_hp, enemy_hp, stock_attack, stock_defence, logs, phase
 
+    deck = Pparameter.DECK_LIST.copy()
+    player_hp = Pparameter.PLAYER_MAX_HP
+    enemy_hp = Pparameter.ENEMY_MAX_HP
+    stock_attack = 0
+    stock_defence = 0
+    logs = [f"----- {encount} th round START!! -----"]
+    phase = "draw"
 
 # 毎フレーム呼び出すメイン処理
 def run_battle(screen, encount, key_pressed=None):

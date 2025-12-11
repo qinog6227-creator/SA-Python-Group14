@@ -1,4 +1,4 @@
-# Pmain.py 
+# ファイルをインポート
 import pygame
 import sys
 import Ptitle
@@ -6,22 +6,36 @@ import Pmap
 import PbattleG
 import Presult
 import Pparameter
-import Pbattle_main
 import PbattleC
 
+#おまじない
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("サダメドロー")
 
+
+#1つの関数にする
 def main(screen): 
+
+    #初期化(マクロから代入)
+    player_hp = Pparameter.PLAYER_MAX_HP
+    enemy_hp = Pparameter.ENEMY_MAX_HP
+    stock_attack = Pparameter.SWORD_POWER
+    stock_defence = Pparameter.GUARD_POWER
+    enemy_attack = Pparameter.ENEMY_POWER_LIST
+    deck = Pparameter.DECK_LIST.copy()
+    player_hp = Pparameter.PLAYER_MAX_HP
+    enemy_hp = Pparameter.ENEMY_MAX_HP
+
+    #状態によって変わる変数
     game_state = 'title'
     is_win = 'none'
-    encount = 0 
-
+    battle_turn = 'player'
+    encount = 0
     key_pressed = None
 
-    while True:
 
+    while True:
         key_pressed = None  #毎フレーム初期化
 
         # 画面を閉じれば終了   
@@ -30,6 +44,7 @@ def main(screen):
                 pygame.quit()
                 sys.exit()
 
+            #画面遷移の判定
             if event.type == pygame.KEYDOWN:
                 key_pressed = event.key
                 
@@ -43,8 +58,6 @@ def main(screen):
                     if event.key == pygame.K_SPACE:
                         game_state = 'battle'
                         encount += 1
-                        Pbattle_main.battle_init(encount)
-
 
         # 描画処理（イベントループの外）
         screen.fill((0,0,0))
@@ -55,8 +68,11 @@ def main(screen):
         elif game_state == 'map':
             Pmap.draw_map1(screen)
 
+
+
+    #バトルを描画  
         elif game_state == 'battle':
-            is_win = Pbattle_main.run_battle(screen, encount, key_pressed)
+            
 
             # 勝敗判定
             if is_win == 'win':
