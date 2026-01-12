@@ -42,15 +42,15 @@ def main():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         if battle_result_flag: # 勝ち
-                            if current_stage == 3: # 全クリ
+                            if current_stage == 3: # 全クリア
                                 state = "title"
                             else:
                                 state = "map"
                         else: # 負け
                             state = "title"
 
-        # --- 各シーンの描画・更新 ---
-        
+    
+        # 画面描画    
         if state == "title":
             TITLE.draw_title(screen)
 
@@ -60,12 +60,7 @@ def main():
                 # バトル開始へ遷移
                 res, new_hp = MAIN_BATTLE.battle_loop(screen, selected, player_hp)
                 
-                # バトル終了後
-                
-                # ★★★ 削除またはコメントアウト！ ★★★
-                # player_hp = PARAMETER.PLAYER_MAX_HP # ← これがあると毎回リセットされてしまう！
-                
-                # その代わり、バトル後のHPを現在のHPとして更新
+                # バトル後のHPを現在のHPに更新
                 player_hp = new_hp 
 
                 if res == "win":

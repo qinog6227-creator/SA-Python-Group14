@@ -7,14 +7,13 @@ FONT_M = pygame.font.Font(None, 40)
 FONT_S = pygame.font.Font(None, 30)
 FONT50 = pygame.font.Font(None, 50)
 
-# --- ★追加: 画像のロードとリサイズ ---
-# カード画像 (アスペクト比を維持しつつ、使いやすいサイズにしておく)
-# 元の rect 設定に合わせて 100x150 にリサイズします
+
+# カードの画像
 IMG_SWORD = pygame.transform.scale(pygame.image.load("assets/SwordCard.png"), (100, 150))
 IMG_SHIELD = pygame.transform.scale(pygame.image.load("assets/ShieldCard.png"), (100, 150))
 IMG_SKULL = pygame.transform.scale(pygame.image.load("assets/Skull.png"), (100, 150))
 
-# 敵画像 (敵のサイズに合わせてリサイズするための元画像)
+# 敵の画像
 IMG_ENEMY_RAW = pygame.image.load("assets/Enemy.png")
 IMG_BOSS_RAW = pygame.image.load("assets/Boss.png")
 
@@ -22,7 +21,7 @@ IMG_BOSS_RAW = pygame.image.load("assets/Boss.png")
 def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, logs, last_card):
     screen.fill((30, 30, 40)) # 背景色
 
-    # --- ヘッダー情報のテキスト描画 (変更なし) ---
+    #ヘッダー情報のテキスト描画
     if stage_num == 1 or stage_num == 2:
         type_enemy = 'Normal Enemy'
     if stage_num == 3:
@@ -36,7 +35,7 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
     info_text2 = FONT50.render(info_str2, True, PARAMETER.WHITE)
     screen.blit(info_text2, (30, 70))
 
-    # --- ボーナス表示 (変更なし) ---
+    #剣のカードを3枚ごとのボーナスダメージを表示
     atk_text = FONT_L.render(f"ATK Stock: {stockA}", True, PARAMETER.RED)
     screen.blit(atk_text, (700, 30))
     
@@ -46,14 +45,14 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
         bonus_text = FONT_M.render(bonus_str, True, (255, 215, 0)) 
         screen.blit(bonus_text, (700, 80))
 
-    # --- ★変更: 敵の描画 (画像) ---
+    # 敵の描画
     enemy_center_x = PARAMETER.SCREEN_WIDTH // 2
     enemy_center_y = 200
     
-    if stage_num == 3: # ボス
+    if stage_num == 3: # ボスの敵
         enemy_w, enemy_h = 200, 200 # 少し大きく
         use_img = IMG_BOSS_RAW
-    else: # ザコ
+    else: # 普通の敵
         enemy_w, enemy_h = 150, 150
         use_img = IMG_ENEMY_RAW
 
@@ -65,9 +64,9 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
     screen.blit(current_enemy_img, img_rect)
 
 
-    # --- ★変更: 最後に引いたカードの表示 (画像) ---
+    # 最後に引いたカードの表示
     # 表示位置
-    center_x = 910 # 位置微調整
+    center_x = 910
     center_y = 280
     
     # 枠線だけ描くためのRect
@@ -94,7 +93,7 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
         screen.blit(text, text.get_rect(center=card_rect.center))
 
 
-    # --- ログ表示 (変更なし) ---
+    # ログの表示
     log_area_rect = pygame.Rect(10, 480, 620, 120)
     pygame.draw.rect(screen, (50, 50, 60), log_area_rect, border_radius=5)
     pygame.draw.rect(screen, PARAMETER.WHITE, log_area_rect, 2, border_radius=5)
@@ -105,7 +104,7 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
         screen.blit(t, (20, y))
         y += 45
 
-    # --- ボタン描画 (変更なし) ---
+    # ボタンの描画
     btn_draw_rect = pygame.Rect(650, 400, 300, 60)
     btn_exec_rect = pygame.Rect(650, 480, 300, 60)
 
@@ -120,7 +119,7 @@ def draw_battle_screen(screen, stage_num, p_hp, e_hp, e_max_hp, stockA, stockD, 
     return btn_draw_rect, btn_exec_rect
 
 
-# --- ★変更: 手札描画関数 ---
+# 手札を描画する関数
 CARD_WIDTH = 100
 CARD_HEIGHT = 150
 CARD_MARGIN = 20

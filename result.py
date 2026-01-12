@@ -1,7 +1,6 @@
 import pygame
 import PARAMETER
 
-# --- ★追加: 画像のロード ---
 # 画像サイズを画面サイズ(1000x600)に合わせる
 IMG_WIN = pygame.transform.scale(pygame.image.load("assets/GoToNextStage.png"), PARAMETER.SCREEN_SIZE)
 IMG_LOSE = pygame.transform.scale(pygame.image.load("assets/GameOver.png"), PARAMETER.SCREEN_SIZE)
@@ -19,10 +18,6 @@ def draw_result(screen, is_win, is_clear):
     else: # ステージクリア（次へ）
         screen.blit(IMG_WIN, (0, 0))
 
-    # --- 案内テキスト (画像の上に重ねて表示) ---
-    # 画像があるので文字は見やすくするために縁取りなど工夫が必要かもしれませんが
-    # いったんシンプルに白文字で下に表示します
-    
     font_s = pygame.font.Font(None, 50)
     
     if not is_win:

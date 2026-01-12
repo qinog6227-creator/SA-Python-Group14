@@ -14,7 +14,6 @@ def battle_loop(screen, stage_num, player_hp):
 
     # バトル初期状態
     stockA = 0
-    # stockD = 0 ← 削除 (もう使わない)
     deck = CALC.init_deck()
     logs = ["Battle Start!"]
     last_card = None
@@ -24,7 +23,7 @@ def battle_loop(screen, stage_num, player_hp):
     result = "running" # win, lose, running
 
     while running:
-        # --- イベント処理 ---
+        # イベント処理
         action = None # "draw", "exec"
 
         for event in pygame.event.get():
@@ -47,9 +46,8 @@ def battle_loop(screen, stage_num, player_hp):
                     elif 480 <= my <= 540:
                         action = "exec"
 
-        # --- ロジック反映 ---
+        # ロジック反映
         if action == "draw":
-            # ★変更: CALC.draw_card から stockD を受け取らない
             card, stockA, is_skull, deck = CALC.draw_card(deck, stockA)
             
             last_card = card
@@ -57,7 +55,6 @@ def battle_loop(screen, stage_num, player_hp):
             
             if is_skull:
                 logs.append("SKULL! Stocks Lost & Enemy Turn!")
-                # ★変更: 防御値なしでダメージ計算
                 dmg = CALC.calc_enemy_damage(e_power) 
                 player_hp -= dmg
                 logs.append(f"Enemy Attack! {dmg} dmg taken.")
@@ -65,9 +62,9 @@ def battle_loop(screen, stage_num, player_hp):
                 if card == PARAMETER.CARD_SWORD:
                     logs.append(f"Draw Sword! ATK UP!")
                 
-                # ★★★ ここでHP回復処理！ ★★★
+                # 盾のカードを引いたときの処理
                 elif card == PARAMETER.CARD_GUARD:
-                    heal_val = PARAMETER.GUARD_VAL # 1回復
+                    heal_val = PARAMETER.GUARD_VAL # HPを1回復
                     player_hp += heal_val
                     logs.append(f"Draw Shield! HP +{heal_val}!")
 
@@ -83,16 +80,12 @@ def battle_loop(screen, stage_num, player_hp):
             
             # 敵の反撃
             if e_hp > 0:
-                # ★変更: 防御値なしでダメージ計算 (stockDを渡さない)
                 dmg_to_player = CALC.calc_enemy_damage(e_power)
                 player_hp -= dmg_to_player
-                
-                # stockD = 0 ← 削除
-                
                 logs.append(f"Enemy Attack! {dmg_to_player} dmg taken.")
 
 
-        # --- 判定 ---
+        # 勝敗の判定
         if e_hp <= 0:
             result = "win"
             running = False
@@ -100,8 +93,7 @@ def battle_loop(screen, stage_num, player_hp):
             result = "lose"
             running = False
 
-        # --- 描画 ---
-        # ★修正: stockD の場所を 0 に書き換える
+        #描画
         BATTLE.draw_battle_screen(screen, stage_num, player_hp, e_hp, e_max_hp, stockA, 0, logs, last_card)
 
         # 関数を呼び出し、手札リストを渡す

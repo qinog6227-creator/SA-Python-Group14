@@ -7,14 +7,8 @@ def init_deck():
     random.shuffle(deck)
     return deck
 
-# CALC.py
-
-# 引数から stockD を削除
+# カードを引いたときの論理レベルでの処理
 def draw_card(deck, stockA): 
-    """
-    カードを1枚引く処理
-    Return: (card_type, stockA, is_skull, deck)
-    """
     if not deck:
         deck = init_deck()
     
@@ -23,25 +17,20 @@ def draw_card(deck, stockA):
     
     if card == PARAMETER.CARD_SWORD:
         stockA += PARAMETER.SWORD_DMG
-    # ★変更: GUARDカードのときは何もしない（MAIN_BATTLEでHP回復するため）
     elif card == PARAMETER.CARD_GUARD:
         pass 
     elif card == PARAMETER.CARD_SKULL:
         stockA = 0
-        # stockD = 0 ← 削除
         is_skull = True
 
-    # 戻り値から stockD を削除
     return card, stockA, is_skull, deck
 
-# ★変更: 引数 stockD を削除し、防御計算なしでダメージをそのまま返す
+# 敵が与えるダメージを計算(後々の改変のため作成)
 def calc_enemy_damage(enemy_power):
-    """敵の攻撃ダメージ計算（素通り）"""
     return enemy_power
 
 # 3枚溜めるごとにボーナスダメージ
 def calc_player_damage(stockA):
-    """プレイヤーの攻撃ダメージ計算"""
     
     # 1. 基本ダメージ（溜めた枚数）
     base_damage = stockA
@@ -50,7 +39,7 @@ def calc_player_damage(stockA):
     # 割り算の商（//）を使うので、3, 4, 5枚なら「1セット」、6, 7, 8枚なら「2セット」と自動計算されます
     bonus = 2 * (stockA // 3)
     
-    # 合計
+    # 3. 合計を計算
     total_damage = base_damage + bonus
     
     return total_damage
